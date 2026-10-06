@@ -1,0 +1,16 @@
+---
+interface Props { class?: string }
+const { class: cls = 'h-11 w-11' } = Astro.props;
+---
+<svg class={cls} viewBox="0 0 64 64" aria-hidden="true">
+  <circle cx="32" cy="32" r="31" fill="var(--color-salvia-200)" />
+  <path d="M14 15 C 8 26, 10 38, 19 44 C 23 34, 22 22, 14 15 Z" fill="var(--color-bosque-700)" />
+  <path d="M14.5 17 C 16 27, 18 35, 19 43" stroke="var(--color-salvia-300)" stroke-width="1.4" fill="none" stroke-linecap="round" />
+  <path d="M50 15 C 56 26, 54 38, 45 44 C 41 34, 42 22, 50 15 Z" fill="var(--color-bosque-700)" />
+  <path d="M49.5 17 C 48 27, 46 35, 45 43" stroke="var(--color-salvia-300)" stroke-width="1.4" fill="none" stroke-linecap="round" />
+  <path d="M20 30 C 20 21, 44 21, 44 30 L 44 40 C 44 50, 37 55, 32 55 C 27 55, 20 50, 20 40 Z" fill="var(--color-bosque-900)" />
+  <ellipse cx="32" cy="46" rx="7.5" ry="6" fill="var(--color-arena-200)" />
+  <path d="M28.5 42.5 C 28.5 40, 35.5 40, 35.5 42.5 C 35.5 44.5, 32 45.5, 32 45.5 C 32 45.5, 28.5 44.5, 28.5 42.5 Z" fill="var(--color-terracota-500)" />
+  <circle cx="26.5" cy="34" r="2" fill="var(--color-crema)" />
+  <circle cx="37.5" cy="34" r="2" fill="var(--color-crema)" />
+</svg>

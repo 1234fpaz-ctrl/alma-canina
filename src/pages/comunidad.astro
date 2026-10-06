@@ -1,0 +1,127 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import EventCard from '../components/EventCard.astro';
+import Photo from '../components/Photo.astro';
+import Icon from '../components/Icon.astro';
+import DogSide from '../components/DogSide.astro';
+import community from '../data/community.json';
+import { getEvents, getTestimonials } from '../lib/content';
+import { breadcrumbSchema } from '../lib/schema';
+import { formatDate, settings } from '../lib/site';
+
+const { upcoming, past } = await getEvents();
+const testimonials = await getTestimonials();
+const gallery = (community.gallery ?? []) as { image: string; alt: string; caption?: string }[];
+const allies = (community.allies ?? []) as { name: string; logo?: string; url?: string; description?: string }[];
+const crumbs = [{ name: 'Inicio', path: '/' }, { name: 'Comunidad', path: '/comunidad/' }];
+const eventSchemas = upcoming.map((e) => ({
+  '@context': 'https://schema.org',
+  '@type': 'Event',
+  name: e.data.title,
+  description: e.data.summary,
+  startDate: e.data.date.toISOString().slice(0, 10),
+  eventStatus: 'https://schema.org/EventScheduled',
+  eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  location: { '@type': 'Place', name: e.data.location, address: { '@type': 'PostalAddress', addressLocality: settings.location.municipality, addressRegion: settings.location.department, addressCountry: 'CO' } },
+  organizer: { '@id': new URL('/#organizacion', Astro.site).href },
+}));
+---
+<BaseLayout
+  title="Comunidad — La manada Alma Canina"
+  description="Agenda de próximas experiencias, talleres y encuentros para familias y perros en Tenjo. Historias, aliados y comunidad Alma Canina."
+  schema={[breadcrumbSchema(Astro.site!, crumbs), ...eventSchemas]}
+>
+  <PageHero eyebrow={community.intro.eyebrow} title={community.intro.title} text={community.intro.text} crumbs={crumbs} tone="crema" />
+
+  <section id="agenda" class="bg-blanco py-20 md:py-24" aria-labelledby="agenda-t">
+    <div class="container-alma">
+      <SectionTitle eyebrow="Agenda" title={community.agenda.title} ears id="agenda-t" />
+      {upcoming.length > 0 ? (
+        <div class="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-agenda>
+          {upcoming.map((ev, i) => <div data-date={ev.data.date.toISOString().slice(0, 10)}><EventCard ev={ev} index={i} /></div>)}
+        </div>
+      ) : (
+        <div class="reveal mt-12 flex flex-col items-start gap-6 rounded-[2rem] bg-crema p-8 md:flex-row md:items-center md:justify-between md:p-10">
+          <div class="flex items-center gap-5"><DogSide class="h-14 w-auto shrink-0 text-bosque-800" /><p class="max-w-xl text-lg text-tinta-suave">{community.agenda.emptyText}</p></div>
+          <a href="/contacto/?interes=Eventos#formulario" class="btn btn-primary shrink-0">Avísame</a>
+        </div>
+      )}
+    </div>
+  </section>
+
+  {past.length > 0 && (
+    <section class="bg-salvia-50 py-20" aria-labelledby="realizadas">
+      <div class="container-alma">
+        <SectionTitle eyebrow="Así lo vivimos" title="Experiencias realizadas" id="realizadas" />
+        <ul class="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {past.slice(0, 9).map((e) => (
+            <li class="reveal flex gap-4 rounded-3xl bg-blanco p-5">
+              <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-salvia-200"><Icon name="calendar" class="h-6 w-6 text-bosque-800" /></span>
+              <span><span class="block font-semibold text-bosque-900">{e.data.title}</span><span class="text-sm text-tinta-suave">{formatDate(e.data.date)}</span></span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <section class="bg-blanco py-20" aria-labelledby="historias">
+    <div class="container-alma">
+      <SectionTitle eyebrow="Historias de familias" title="Lo que dice la manada" id="historias" />
+      {testimonials.length > 0 ? (
+        <ul class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {testimonials.map((t, i) => (
+            <li class="reveal card p-7" style={`--d:${(i % 3) * 80}ms`}>
+              <svg class="h-8 w-8 text-terracota-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10 7H6a3 3 0 0 0-3 3v4h5v5h2zM21 7h-4a3 3 0 0 0-3 3v4h5v5h2z" /></svg>
+              <blockquote class="mt-4 font-display text-xl leading-snug text-bosque-900" style="font-variation-settings:'SOFT' 100">“{t.data.quote}”</blockquote>
+              <p class="mt-5 font-semibold text-bosque-900">{t.data.name}{t.data.dogName && <span class="font-normal text-tinta-suave"> · con {t.data.dogName}</span>}</p>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="reveal mt-8 max-w-2xl rounded-3xl bg-crema p-6 text-tinta-suave">Muy pronto compartiremos aquí las historias reales de las familias que viven Alma Canina.</p>
+      )}
+    </div>
+  </section>
+
+  {gallery.length > 0 && (
+    <section class="bg-salvia-100 py-20" aria-labelledby="galeria">
+      <div class="container-alma">
+        <SectionTitle eyebrow="Galería" title="Momentos de la manada" id="galeria" />
+        <ul class="mt-10 columns-1 gap-4 sm:columns-2 lg:columns-3">
+          {gallery.map((g) => (
+            <li class="reveal mb-4 break-inside-avoid overflow-hidden rounded-3xl">
+              <figure class="card-zoom"><Photo src={g.image} alt={g.alt} />{g.caption && <figcaption class="bg-blanco p-3 text-sm text-tinta-suave">{g.caption}</figcaption>}</figure>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <section class="bg-bosque-900 py-20 text-blanco" aria-labelledby="aliados">
+    <div class="container-alma">
+      <SectionTitle eyebrow="Aliados y profesionales invitados" title="Crecemos en manada" text={community.alliesText} light id="aliados" />
+      {allies.length > 0 && (
+        <ul class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {allies.map((a) => (
+            <li class="reveal rounded-3xl bg-blanco/5 p-6">
+              {a.logo && <img src={a.logo} alt={`Logo de ${a.name}`} class="mb-4 h-12 w-auto" loading="lazy" />}
+              <p class="font-semibold">{a.url ? <a href={a.url} target="_blank" rel="noopener" class="underline-offset-4 hover:underline">{a.name}</a> : a.name}</p>
+              {a.description && <p class="mt-1 text-sm text-salvia-200">{a.description}</p>}
+            </li>
+          ))}
+        </ul>
+      )}
+      <a href="/contacto/?interes=Alianzas#formulario" class="btn btn-light reveal mt-10">Quiero ser aliado <Icon name="arrow" class="h-5 w-5" /></a>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // Si un evento ya pasó desde el último despliegue, se oculta de la agenda.
+  const today = new Date().toISOString().slice(0, 10);
+  document.querySelectorAll<HTMLElement>('[data-agenda] [data-date]').forEach((el) => { if ((el.dataset.date || '') < today) el.hidden = true; });
+</script>

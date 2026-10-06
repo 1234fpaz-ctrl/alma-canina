@@ -1,0 +1,46 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Icon from './Icon.astro';
+import { LAW_TAGS, BILL_STAGE_LABELS } from '../lib/site';
+type Entry = CollectionEntry<'laws'> | CollectionEntry<'bills'>;
+interface Props { item: Entry; index?: number; filterable?: boolean }
+const { item, index = 0, filterable = false } = Astro.props;
+const isBill = item.collection === 'bills';
+const d = item.data as any;
+const href = isBill ? `/legislacion/proyectos/${item.id}/` : `/legislacion/${item.id}/`;
+const searchText = [d.popularName, d.title, d.summary, d.topic, d.lawNumber, d.projectNumber, ...(d.tags || []).map((t: string) => LAW_TAGS[t] || t)].filter(Boolean).join(' ').toLowerCase();
+---
+<article
+  class:list={['card card-lift group flex flex-col', filterable ? 'filterable' : 'reveal', isBill ? 'border-2 border-dashed border-cielo-400 bg-blanco' : '']}
+  style={`--d:${(index % 3) * 80}ms`}
+  data-tags={(d.tags || []).join(' ')}
+  data-search={searchText}
+>
+  <div class="flex flex-1 flex-col p-6 md:p-7">
+    <div class="flex flex-wrap items-center gap-2">
+      {isBill ? (
+        <span class="chip bg-cielo-200 font-bold uppercase tracking-wide text-cielo-700"><Icon name="doc" class="h-4 w-4" />Proyecto de ley</span>
+      ) : (
+        <span class="chip bg-salvia-200 font-bold uppercase tracking-wide text-bosque-900"><Icon name="scale" class="h-4 w-4" />Ley {d.lawNumber} de {d.year}</span>
+      )}
+      {isBill ? (
+        <span class="chip bg-arena-100 text-tinta-suave">Etapa conocida: {BILL_STAGE_LABELS[d.stage]}</span>
+      ) : (
+        <span class="chip bg-salvia-50 text-bosque-800"><Icon name="check" class="h-4 w-4" />{d.status}</span>
+      )}
+    </div>
+    <h3 class="mt-4 text-[1.7rem] text-bosque-900">
+      <a href={href} class="no-underline after:absolute after:inset-0 after:content-['']">{d.popularName}</a>
+    </h3>
+    <p class="mt-2 text-tinta-suave">{isBill ? d.summary : d.topic}</p>
+    {(d.tags || []).length > 0 && (
+      <ul class="mt-4 flex flex-wrap gap-1.5" aria-label="Temas">
+        {d.tags.slice(0, 3).map((t: string) => <li class="chip bg-crema text-[0.8rem] text-tinta-suave">{LAW_TAGS[t] || t}</li>)}
+      </ul>
+    )}
+    <span class="mt-auto inline-flex items-center gap-2 pt-6 font-semibold text-bosque-800">
+      {isBill ? 'Ver ficha del proyecto' : 'Ver ficha pedagógica'}
+      <Icon name="arrow" class="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+    </span>
+  </div>
+</article>

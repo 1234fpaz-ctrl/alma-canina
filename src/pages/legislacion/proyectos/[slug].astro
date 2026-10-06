@@ -1,0 +1,116 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import Icon from '../../../components/Icon.astro';
+import LawCard from '../../../components/LawCard.astro';
+import { render } from 'astro:content';
+import { BILL_STAGES } from '../../../content.config';
+import { LAW_TAGS, LEGAL_DISCLAIMER, BILL_STAGE_LABELS, formatDate } from '../../../lib/site';
+import { getBills } from '../../../lib/content';
+import { breadcrumbSchema } from '../../../lib/schema';
+
+export async function getStaticPaths() {
+  const bills = await getBills();
+  return bills.map((bill) => ({ params: { slug: bill.id }, props: { bill } }));
+}
+const { bill } = Astro.props;
+const d = bill.data;
+const { Content } = await render(bill);
+const hasBody = (bill.body ?? '').trim().length > 0;
+const currentIdx = BILL_STAGES.indexOf(d.stage);
+const others = (await getBills()).filter((b) => b.id !== bill.id).slice(0, 3);
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Legislación', path: '/legislacion/' },
+  { name: 'Proyectos de ley', path: '/legislacion/#proyectos' },
+  { name: d.popularName, path: `/legislacion/proyectos/${bill.id}/` },
+];
+const facts = [
+  { k: 'Número actual', v: d.projectNumber },
+  { k: 'Legislatura', v: d.legislature },
+  { k: 'Estado', v: d.status },
+  { k: 'Cámara', v: d.chamber },
+  { k: 'Etapa legislativa conocida', v: BILL_STAGE_LABELS[d.stage] },
+  { k: 'Último movimiento conocido', v: d.lastMovementDate || 'Pendiente de verificación' },
+];
+---
+<BaseLayout
+  title={`${d.popularName} — Proyecto de ley`}
+  description={`${d.popularName}: ${d.summary} Seguimiento pedagógico del proyecto de ley, etapa conocida y fuentes.`}
+  type="article"
+  schema={[breadcrumbSchema(Astro.site!, crumbs)]}
+>
+  <header class="relative overflow-hidden bg-cielo-200/50 pb-16 pt-32 md:pt-40">
+    <div aria-hidden="true" class="blob-2 absolute -right-24 -top-24 h-96 w-96 bg-blanco/60"></div>
+    <div class="container-alma relative">
+      <Breadcrumbs items={crumbs} />
+      <div class="mt-8 flex flex-wrap gap-2">
+        <span class="chip border-2 border-dashed border-cielo-700 bg-blanco font-bold uppercase tracking-wide text-cielo-700"><Icon name="doc" class="h-4 w-4" />Proyecto de ley</span>
+        {!d.verified && <span class="chip bg-arena-200 font-semibold text-tinta"><Icon name="alert" class="h-4 w-4" />Estado pendiente de verificación</span>}
+      </div>
+      <h1 class="display-lg mt-5 max-w-4xl text-bosque-900">{d.popularName}</h1>
+      <p class="mt-3 max-w-3xl text-lg text-tinta-suave">{d.title}</p>
+      <p class="mt-6 max-w-3xl rounded-2xl bg-blanco/80 p-4 text-tinta"><strong>Importante:</strong> este es un proyecto de ley, <strong>no una ley vigente</strong>. Su contenido puede cambiar durante el trámite o archivarse.</p>
+    </div>
+  </header>
+
+  <section class="bg-blanco py-14" aria-labelledby="tramite">
+    <div class="container-alma">
+      <h2 id="tramite" class="text-2xl text-bosque-900">Línea del trámite</h2>
+      <p class="mt-1 text-tinta-suave">Se resalta la última etapa conocida.</p>
+      <ol class="stage-line mt-8 grid grid-cols-2 gap-y-6 sm:grid-cols-3 lg:grid-cols-6">
+        {BILL_STAGES.map((s, i) => (
+          <li class="relative flex flex-col items-center text-center" data-state={i < currentIdx ? 'done' : i === currentIdx ? 'current' : 'pending'} aria-current={i === currentIdx ? 'step' : undefined}>
+            {i < BILL_STAGES.length - 1 && <span class="absolute left-1/2 top-5 hidden h-0.5 w-full bg-salvia-200 lg:block" aria-hidden="true"></span>}
+            <span class="stage-dot relative z-[1] inline-flex h-10 w-10 items-center justify-center rounded-full border-2 border-salvia-300 bg-blanco text-sm font-bold text-tinta-suave">{i < currentIdx ? '✓' : i + 1}</span>
+            <span class="stage-label mt-2 text-sm text-tinta-suave">{BILL_STAGE_LABELS[s]}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <div class="bg-blanco pb-20">
+    <div class="container-alma grid gap-12 lg:grid-cols-12">
+      <aside class="lg:col-span-4 lg:order-2">
+        <dl class="sticky top-28 space-y-3 rounded-[2rem] bg-salvia-50 p-6">
+          {facts.map((f) => <div><dt class="text-sm font-semibold uppercase tracking-wider text-tinta-suave">{f.k}</dt><dd class="mt-0.5 text-bosque-900">{f.v}</dd></div>)}
+          <div><dt class="text-sm font-semibold uppercase tracking-wider text-tinta-suave">Autores</dt><dd class="mt-0.5 text-bosque-900">{d.authors.length ? d.authors.join(', ') : 'Pendiente de verificación'}</dd></div>
+          <div class="border-t border-salvia-200 pt-3"><dt class="text-sm font-semibold uppercase tracking-wider text-tinta-suave">Fecha de actualización</dt><dd class="mt-0.5 font-semibold text-bosque-900"><time datetime={d.lastUpdated.toISOString()}>{formatDate(d.lastUpdated)}</time></dd></div>
+        </dl>
+      </aside>
+      <div class="space-y-12 lg:col-span-8 lg:order-1">
+        <section class="reveal"><h2 class="display-md text-bosque-900">Objetivo</h2><p class="mt-4 text-lg text-tinta">{d.objective}</p></section>
+        <section class="reveal"><h2 class="text-3xl text-bosque-900">¿Qué propone?</h2>
+          <p class="mt-4 text-lg text-tinta-suave">{d.summary}</p>
+          {d.keyPoints.length > 0 && <ul class="mt-5 grid gap-3">{d.keyPoints.map((k) => <li class="flex gap-3 rounded-2xl bg-cielo-200/30 p-4"><Icon name="check" class="h-5 w-5 shrink-0 text-cielo-700" />{k}</li>)}</ul>}
+        </section>
+        {d.whyItMatters && <section class="reveal rounded-[2rem] bg-arena-100 p-7"><h2 class="text-3xl text-bosque-900">¿Por qué importa?</h2><p class="mt-3 text-lg text-tinta">{d.whyItMatters}</p></section>}
+        <section class="reveal"><h2 class="text-3xl text-bosque-900">Último movimiento conocido</h2><p class="mt-3 text-lg text-tinta">{d.lastMovement || 'Pendiente de verificación/actualización.'}</p>
+          {d.timeline.length > 0 && (
+            <ol class="mt-6 space-y-4 border-l-2 border-dashed border-salvia-300 pl-6">
+              {d.timeline.map((t) => <li class="relative"><span class="absolute -left-[1.95rem] top-1.5 h-3 w-3 rounded-full bg-terracota-500" aria-hidden="true"></span><p class="text-sm font-semibold text-terracota-700">{t.date}</p><p class="text-tinta">{t.event}</p></li>)}
+            </ol>
+          )}
+        </section>
+        {d.nextSteps && <section class="reveal"><h2 class="text-3xl text-bosque-900">Próximos pasos</h2><p class="mt-3 text-lg text-tinta-suave">{d.nextSteps}</p></section>}
+        {hasBody && <section class="prose-alma reveal max-w-none text-lg"><Content /></section>}
+        <section class="reveal rounded-[2rem] border-2 border-salvia-200 p-6 md:p-8">
+          <h2 class="text-3xl text-bosque-900">Documentos y fuentes</h2>
+          {d.documents.length > 0 && <ul class="mt-4 space-y-2">{d.documents.map((s) => <li><a href={s.url} target="_blank" rel="noopener" class="inline-flex items-center gap-2 font-semibold text-bosque-700 underline decoration-salvia-400 decoration-2 underline-offset-4"><Icon name="doc" class="h-4 w-4" />{s.label}</a></li>)}</ul>}
+          <ul class="mt-4 space-y-2">{d.sources.map((s) => <li><a href={s.url} target="_blank" rel="noopener" class="inline-flex items-start gap-2 text-bosque-700 underline decoration-salvia-400 decoration-2 underline-offset-4"><Icon name="link" class="mt-1 h-4 w-4 shrink-0" />{s.label}</a></li>)}</ul>
+          <p class="mt-4 text-sm text-tinta-suave">Para el estado oficial, consulta los portales del Senado de la República y de la Cámara de Representantes.</p>
+          <div class="mt-5 flex flex-wrap gap-2">{d.tags.map((t) => <span class="chip bg-crema text-sm text-tinta-suave">{LAW_TAGS[t] || t}</span>)}</div>
+        </section>
+        <p class="rounded-2xl bg-crema p-5 text-tinta"><Icon name="info" class="mr-2 inline h-5 w-5 text-terracota-700" />{LEGAL_DISCLAIMER}</p>
+      </div>
+    </div>
+  </div>
+
+  <section class="bg-salvia-100 py-16" aria-labelledby="otros">
+    <div class="container-alma">
+      <h2 id="otros" class="display-md text-bosque-900">Otros proyectos en seguimiento</h2>
+      <div class="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">{others.map((o, i) => <LawCard item={o} index={i} />)}</div>
+    </div>
+  </section>
+</BaseLayout>

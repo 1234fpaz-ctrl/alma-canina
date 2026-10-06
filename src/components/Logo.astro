@@ -1,0 +1,27 @@
+---
+/**
+ * Logotipo provisional de Alma Canina.
+ * Símbolo: cabeza de perro cuyas orejas son hojas (naturaleza + perro) dentro de un círculo-alma.
+ * Para usar un logo definitivo, súbelo desde /admin → Configuración (campo "Logo") y se mostrará en su lugar.
+ */
+interface Props { tone?: 'dark' | 'light'; compact?: boolean; class?: string }
+const { tone = 'dark', compact = false, class: cls = '' } = Astro.props;
+import AlmaMark from "./AlmaMark.astro";
+import settings from '../data/settings.json';
+const custom = (settings as any).logo as string | undefined;
+const ink = tone === 'dark' ? 'var(--color-bosque-900)' : 'var(--color-blanco)';
+const sub = tone === 'dark' ? 'var(--color-terracota-700)' : 'var(--color-arena-200)';
+---
+{custom ? (
+  <img src={custom} alt="Alma Canina" class:list={['h-11 w-auto', cls]} width="160" height="44" />
+) : (
+  <span class:list={['inline-flex items-center gap-2.5', cls]}>
+    <AlmaMark />
+    {!compact && (
+      <span class="flex flex-col leading-none">
+        <span class="font-display text-[1.45rem] font-semibold tracking-tight" style={`color:${ink};font-variation-settings:'SOFT' 100`}>Alma Canina</span>
+        <span class="mt-1 text-[0.62rem] font-bold uppercase tracking-[0.24em]" style={`color:${sub}`}>Educamos con alma</span>
+      </span>
+    )}
+  </span>
+)}

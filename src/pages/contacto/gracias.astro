@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DogFace from '../../components/DogFace.astro';
+import { settings } from '../../lib/site';
+---
+<BaseLayout title="Mensaje enviado" noindex>
+  <section class="flex min-h-[80vh] flex-col items-center justify-center bg-salvia-50 px-5 pt-28 text-center">
+    <DogFace class="success-dog h-28 w-auto" paws={false} />
+    <h1 class="display-md mt-6 text-bosque-900">{settings.form.successTitle}</h1>
+    <p class="lead mt-3 max-w-md">{settings.form.successText}</p>
+    <a href="/" class="btn btn-primary mt-8">Volver al inicio</a>
+  </section>
+</BaseLayout>

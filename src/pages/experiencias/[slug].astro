@@ -1,0 +1,106 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Photo from '../../components/Photo.astro';
+import Icon from '../../components/Icon.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ExperienceCard from '../../components/ExperienceCard.astro';
+import DogFace from '../../components/DogFace.astro';
+import { render } from 'astro:content';
+import { EXPERIENCE_CATEGORIES, whatsappLink, settings } from '../../lib/site';
+import { getExperiences } from '../../lib/content';
+import { breadcrumbSchema } from '../../lib/schema';
+
+export async function getStaticPaths() {
+  const all = await getExperiences();
+  return all.map((exp) => ({ params: { slug: exp.id }, props: { exp } }));
+}
+const { exp } = Astro.props;
+const d = exp.data;
+const { Content } = await render(exp);
+const others = (await getExperiences()).filter((e) => e.id !== exp.id).slice(0, 3);
+const cat = EXPERIENCE_CATEGORIES[d.category];
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Experiencias', path: '/experiencias/' },
+  { name: d.title, path: `/experiencias/${exp.id}/` },
+];
+const wa = whatsappLink(`Hola, Alma Canina. Quiero información sobre: ${d.title} 🐾`);
+---
+<BaseLayout
+  title={d.title}
+  description={`${d.summary} En Alma Canina, Tenjo, Cundinamarca.`}
+  image={d.image || undefined}
+  schema={[
+    breadcrumbSchema(Astro.site!, crumbs),
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      name: d.title,
+      description: d.summary,
+      serviceType: cat.label,
+      provider: { '@id': new URL('/#organizacion', Astro.site).href },
+      areaServed: { '@type': 'Place', name: `${settings.location.municipality}, ${settings.location.department}` },
+    },
+  ]}
+>
+  <section class="bg-salvia-100 pb-16 pt-32 md:pt-40">
+    <div class="container-alma">
+      <Breadcrumbs items={crumbs} />
+      <div class="mt-8 grid items-center gap-10 lg:grid-cols-2">
+        <div>
+          <span class:list={['chip reveal', cat.color]}><Icon name={cat.icon} class="h-4 w-4" />{cat.label}</span>
+          <p class="reveal mt-5 font-semibold text-terracota-700">{d.tagline}</p>
+          <h1 class="display-lg reveal mt-2 text-bosque-900">{d.title}</h1>
+          <p class="lead reveal mt-5">{d.summary}</p>
+          <div class="reveal mt-8 flex flex-col gap-3 sm:flex-row">
+            <a href={`/contacto/?interes=${encodeURIComponent(d.interest)}#formulario`} class="btn btn-primary btn-tail">
+              {d.ctaLabel}
+              <svg class="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true"><path class="tail" d="M2 14 C 8 13, 14 8, 16 2" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" /><circle cx="19" cy="18" r="3" fill="currentColor" /></svg>
+            </a>
+            {wa && <a href={wa} target="_blank" rel="noopener" class="btn btn-ghost text-bosque-900"><Icon name="whatsapp" class="h-5 w-5" />Escríbenos</a>}
+          </div>
+        </div>
+        <div class="reveal peek-host relative">
+          <DogFace class="peek-dog !right-12" />
+          <div class="blob-1 relative z-[1] aspect-[5/4] overflow-hidden shadow-xl">
+            <Photo src={d.image} alt={d.imageAlt} hint={d.photoHint} scene="family" tone="dawn" eager hintPos="blob" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-blanco py-20">
+    <div class="container-alma grid gap-12 lg:grid-cols-12">
+      <div class="lg:col-span-7">
+        <h2 class="display-md reveal text-bosque-900">¿Qué incluye?</h2>
+        <ul class="mt-8 grid gap-3 sm:grid-cols-2">
+          {d.items.map((it, i) => (
+            <li class="reveal flex items-center gap-3 rounded-2xl bg-salvia-50 px-5 py-4 font-medium text-bosque-900" style={`--d:${i * 50}ms`}>
+              <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-salvia-200"><Icon name="check" class="h-4 w-4" /></span>{it}
+            </li>
+          ))}
+        </ul>
+        <div class="prose-alma reveal mt-10 text-lg"><Content /></div>
+      </div>
+      <aside class="lg:col-span-5">
+        <div class="reveal sticky top-28 space-y-4 rounded-[2rem] bg-crema p-7">
+          <h2 class="text-2xl text-bosque-900">Información práctica</h2>
+          <dl class="space-y-4">
+            <div><dt class="text-sm font-semibold uppercase tracking-wider text-tinta-suave">Inversión</dt><dd class="mt-1 text-lg text-bosque-900">{d.price || 'Consúltanos según la experiencia'}</dd></div>
+            <div><dt class="text-sm font-semibold uppercase tracking-wider text-tinta-suave">Horarios</dt><dd class="mt-1 text-lg text-bosque-900">{d.schedule || 'Según disponibilidad. Escríbenos para coordinar.'}</dd></div>
+            <div><dt class="text-sm font-semibold uppercase tracking-wider text-tinta-suave">Lugar</dt><dd class="mt-1 text-lg text-bosque-900">{settings.location.municipality}, {settings.location.department}</dd></div>
+          </dl>
+          {d.note && <p class="flex gap-3 rounded-2xl bg-blanco p-4 text-tinta"><Icon name="info" class="mt-0.5 h-5 w-5 shrink-0 text-terracota-700" /><span>{d.note}</span></p>}
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="ball-zone bg-salvia-50 py-20" aria-labelledby="otras">
+    <div class="container-alma">
+      <h2 id="otras" class="display-md reveal text-bosque-900">Otras experiencias</h2>
+      <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{others.map((o, i) => <ExperienceCard exp={o} index={i + 1} />)}</div>
+    </div>
+  </section>
+</BaseLayout>

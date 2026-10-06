@@ -1,0 +1,80 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { NAV } from '../lib/site';
+interface Props { overlay?: boolean }
+const { overlay = false } = Astro.props;
+const path = Astro.url.pathname.replace(/\/?$/, '/');
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+<header
+  class:list={['site-header fixed inset-x-0 top-0 z-50', overlay ? 'text-blanco' : 'text-bosque-900']}
+  data-overlay={overlay ? 'true' : 'false'}
+  data-scrolled="false"
+>
+  <a href="#contenido" class="sr-only-focusable absolute left-4 top-3 z-[60] rounded-full bg-blanco px-4 py-2 font-semibold text-bosque-900">Saltar al contenido</a>
+  <div class="container-alma flex h-[4.75rem] items-center justify-between gap-6">
+    <a href="/" class="header-logo shrink-0 rounded-xl" title="Ir al inicio">
+      <span class="logo-dark" hidden={overlay}><Logo tone="dark" /></span>
+      <span class="logo-light" hidden={!overlay}><Logo tone="light" /></span>
+    </a>
+
+    <nav aria-label="Principal" class="hidden xl:block">
+      <ul class="flex items-center gap-1">
+        {NAV.filter((n) => n.href !== '/').map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class:list={[
+                'relative rounded-full px-3.5 py-2 text-[0.97rem] font-medium no-underline transition-colors hover:bg-current/10',
+                isActive(item.href) && 'font-semibold after:absolute after:inset-x-4 after:-bottom-0.5 after:h-0.5 after:rounded-full after:bg-terracota-500',
+              ]}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+            >{item.label}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a href="/experiencias/" class="btn btn-tail btn-terracota hidden !min-h-11 !px-5 !py-2 text-[0.95rem] sm:inline-flex">
+        Vive Alma Canina
+        <svg class="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true"><path class="tail" d="M2 14 C 8 13, 14 8, 16 2" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" /><circle cx="19" cy="18" r="3" fill="currentColor" /></svg>
+      </a>
+      <button
+        type="button"
+        class="menu-toggle inline-flex h-12 w-12 items-center justify-center rounded-full hover:bg-current/10 xl:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label="Abrir menú"
+      >
+        <Icon name="menu" class="h-7 w-7" />
+      </button>
+    </div>
+  </div>
+</header>
+
+<div id="mobile-menu" class="mobile-menu fixed inset-0 z-[70] flex flex-col overflow-y-auto bg-bosque-900 text-blanco xl:hidden" data-open="false" role="dialog" aria-modal="true" aria-label="Menú" inert>
+  <div class="container-alma flex h-[4.75rem] items-center justify-between">
+    <Logo tone="light" />
+    <button type="button" class="menu-close inline-flex h-12 w-12 items-center justify-center rounded-full hover:bg-blanco/10" aria-label="Cerrar menú">
+      <Icon name="close" class="h-7 w-7" />
+    </button>
+  </div>
+  <nav aria-label="Menú móvil" class="container-alma flex-1 pt-6">
+    <ul class="space-y-1">
+      {NAV.map((item, i) => (
+        <li class="mm-item" style={`--i:${i}`}>
+          <a href={item.href} class:list={['group flex items-center justify-between border-b border-blanco/10 py-4 font-display text-[2rem] font-medium no-underline', isActive(item.href) && 'text-terracota-300']} aria-current={isActive(item.href) ? 'page' : undefined}>
+            {item.label}
+            <Icon name="arrow" class="h-6 w-6 opacity-40 transition-transform group-hover:translate-x-1 group-hover:opacity-100" />
+          </a>
+        </li>
+      ))}
+    </ul>
+    <div class="mm-item mt-10" style="--i:8">
+      <a href="/experiencias/" class="btn btn-terracota w-full text-lg">Vive Alma Canina 🐾</a>
+    </div>
+  </nav>
+  <p class="container-alma mm-item py-8 text-sm text-salvia-300" style="--i:9">Educamos · Conectamos · Transformamos</p>
+</div>

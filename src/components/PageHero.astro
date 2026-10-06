@@ -1,0 +1,26 @@
+---
+/** Encabezado de páginas interiores con formas orgánicas. */
+import Breadcrumbs from './Breadcrumbs.astro';
+interface Props {
+  eyebrow?: string;
+  title: string;
+  text?: string;
+  crumbs?: { name: string; path: string }[];
+  tone?: 'salvia' | 'crema' | 'bosque';
+}
+const { eyebrow, title, text, crumbs = [], tone = 'salvia' } = Astro.props;
+const bg = { salvia: 'bg-salvia-100', crema: 'bg-crema', bosque: 'bg-bosque-900 text-blanco' }[tone];
+const dark = tone === 'bosque';
+---
+<section class:list={['relative overflow-hidden pb-16 pt-32 md:pb-24 md:pt-40', bg]}>
+  <div aria-hidden="true" class:list={['blob-1 absolute -right-24 -top-24 h-80 w-80 md:h-[30rem] md:w-[30rem]', dark ? 'bg-bosque-800' : 'bg-blanco/60']}></div>
+  <div aria-hidden="true" class:list={['blob-2 absolute -bottom-32 left-[-6rem] h-72 w-72', dark ? 'bg-bosque-700/40' : 'bg-arena-200/50']}></div>
+  <div class="container-alma relative">
+    {crumbs.length > 0 && <Breadcrumbs items={crumbs} dark={dark} />}
+    {eyebrow && <p class:list={['eyebrow reveal mt-6', dark && 'eyebrow-light']}>{eyebrow}</p>}
+    <h1 class:list={['display-lg reveal mt-4 max-w-4xl', dark ? 'text-blanco' : 'text-bosque-900']} style="--d:80ms">{title}</h1>
+    {text && <p class:list={['lead reveal mt-6 max-w-2xl', dark && '!text-salvia-200']} style="--d:160ms">{text}</p>}
+    <slot />
+  </div>
+</section>
+<svg class:list={['-mt-px block w-full', dark ? 'text-bosque-900' : tone === 'crema' ? 'text-crema' : 'text-salvia-100']} viewBox="0 0 1440 48" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0 H1440 V10 C 1100 52, 760 44, 480 26 C 300 14, 140 14, 0 28 Z" fill="currentColor" /></svg>

@@ -1,0 +1,48 @@
+---
+import '../styles/global.css';
+import Seo from '../components/Seo.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import DogWalker from '../components/DogWalker.astro';
+import WhatsAppFloat from '../components/WhatsAppFloat.astro';
+import { organizationSchema, websiteSchema } from '../lib/schema';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  overlayHeader?: boolean;
+  schema?: Record<string, unknown>[];
+  noindex?: boolean;
+}
+const { title, description, image, type, overlayHeader = false, schema = [], noindex } = Astro.props;
+const site = Astro.site!;
+const baseSchema = [organizationSchema(site), ...(Astro.url.pathname === '/' ? [websiteSchema(site)] : [])];
+---
+<!doctype html>
+<html lang="es-CO" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>document.documentElement.classList.replace('no-js', 'js');</script>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="theme-color" content="#1a3124" />
+    <meta name="generator" content={Astro.generator} />
+    <Seo title={title} description={description} image={image} type={type} noindex={noindex} schema={[...baseSchema, ...schema]} />
+  </head>
+  <body>
+    <Header overlay={overlayHeader} />
+    <main id="contenido" tabindex="-1" class="outline-none">
+      <slot />
+    </main>
+    <Footer />
+    <DogWalker />
+    <WhatsAppFloat />
+    <script>
+      import '../scripts/main.ts';
+    </script>
+  </body>
+</html>

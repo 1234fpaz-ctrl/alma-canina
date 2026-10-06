@@ -1,0 +1,279 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Photo from '../components/Photo.astro';
+import Icon from '../components/Icon.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import ExperienceCard from '../components/ExperienceCard.astro';
+import EventCard from '../components/EventCard.astro';
+import LawCard from '../components/LawCard.astro';
+import PawTrail from '../components/PawTrail.astro';
+import DogSide from '../components/DogSide.astro';
+import home from '../data/home.json';
+import community from '../data/community.json';
+import { settings } from '../lib/site';
+import { getExperiences, getEvents, getLaws, getBills } from '../lib/content';
+
+const experiences = await getExperiences();
+const { upcoming } = await getEvents();
+const laws = await getLaws();
+const bills = await getBills();
+const featuredLaws = laws.filter((l) => l.data.featured).slice(0, 3);
+const { hero, pillars, story, about, experiencesIntro, legislationTeaser, tenjo, finalCta } = home;
+const loc = settings.location;
+
+const pillarStyles = [
+  { bg: 'bg-salvia-200', blob: 'blob-1', icon: 'book' },
+  { bg: 'bg-arena-200', blob: 'blob-2', icon: 'heart' },
+  { bg: 'bg-terracota-300/60', blob: 'blob-1', icon: 'leaf' },
+];
+const storyScenes = [
+  { scene: 'family', tone: 'dawn' },
+  { scene: 'forest', tone: 'day' },
+  { scene: 'event', tone: 'dusk' },
+] as const;
+---
+<BaseLayout overlayHeader>
+  <!-- HERO -->
+  <section class="relative isolate flex min-h-[100svh] items-end overflow-hidden bg-bosque-950 pb-16 pt-32 text-blanco md:items-center md:pb-24">
+    <div class="parallax absolute inset-0 -z-10" data-speed="0.12">
+      {hero.video ? (
+        <video class="h-full w-full object-cover" autoplay muted loop playsinline poster={hero.image || undefined} aria-hidden="true">
+          <source src={hero.video} type="video/mp4" />
+        </video>
+      ) : (
+        <Photo src={hero.image} alt={hero.imageAlt} hint="Familia y perro en la naturaleza de Tenjo (hero)" scene="family" tone="dusk" shift={230} eager sizes="100vw" />
+      )}
+    </div>
+    <div class="absolute inset-0 -z-10 bg-gradient-to-t from-bosque-950/90 via-bosque-950/45 to-bosque-950/30 md:bg-gradient-to-r md:from-bosque-950/85 md:via-bosque-950/45 md:to-transparent" aria-hidden="true"></div>
+
+    <div class="container-alma">
+      <p class="eyebrow eyebrow-light reveal">{hero.eyebrow}</p>
+      <h1 class="display-xl reveal mt-5 max-w-4xl text-blanco" style="--d:90ms">
+        {hero.title.split(' ').slice(0, -1).join(' ')} <em class="font-medium not-italic text-terracota-300" style="font-style:italic">{hero.title.split(' ').slice(-1)}</em>
+      </h1>
+      <p class="reveal mt-6 max-w-xl font-display text-2xl leading-snug text-arena-100 md:text-[1.85rem]" style="--d:180ms;font-variation-settings:'SOFT' 100">{hero.subtitle}</p>
+      <p class="reveal mt-4 max-w-lg text-lg text-salvia-200" style="--d:240ms">{hero.text}</p>
+      <div class="reveal mt-9 flex flex-col gap-3 sm:flex-row" style="--d:320ms">
+        <a href="/alma-canina/" class="btn btn-light btn-tail">
+          {hero.primaryCta}
+          <svg class="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true"><path class="tail" d="M2 14 C 8 13, 14 8, 16 2" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" /><circle cx="19" cy="18" r="3" fill="currentColor" /></svg>
+        </a>
+        <a href="/experiencias/" class="btn btn-ghost text-blanco">{hero.secondaryCta} <Icon name="arrow" class="h-5 w-5" /></a>
+      </div>
+    </div>
+
+    <a href="#alma-es" class="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-1 text-sm text-salvia-200 no-underline md:flex" aria-label="Seguir bajando">
+      <svg class="h-6 w-6 animate-float" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><ellipse cx="7" cy="8" rx="2.2" ry="2.8" /><ellipse cx="17" cy="8" rx="2.2" ry="2.8" /><ellipse cx="3.6" cy="13" rx="1.9" ry="2.4" /><ellipse cx="20.4" cy="13" rx="1.9" ry="2.4" /><path d="M12 12c-3.2 0-5.4 3.5-5.4 5.6 0 1.7 1.5 2.5 2.9 2.2 1-.2 1.6-.8 2.5-.8s1.5.6 2.5.8c1.4.3 2.9-.5 2.9-2.2 0-2.1-2.2-5.6-5.4-5.6z" /></svg>
+    </a>
+  </section>
+
+  <!-- ALMA CANINA ES… -->
+  <section id="alma-es" class="relative bg-blanco py-20 md:py-28" aria-labelledby="alma-es-title">
+    <div class="container-alma">
+      <SectionTitle eyebrow="Alma Canina es…" title={settings.promise} center id="alma-es-title" />
+      <ol class="mt-14 grid gap-6 md:grid-cols-3 md:gap-8">
+        {pillars.map((p, i) => (
+          <li class="reveal group relative" style={`--d:${i * 120}ms`}>
+            <div class:list={['pillar relative flex min-h-[19rem] flex-col justify-end overflow-hidden p-8 md:min-h-[24rem] md:p-9', pillarStyles[i].bg, `pillar-${i}`]}>
+              <span class="absolute right-8 top-8 font-display text-7xl font-semibold text-bosque-900/10" aria-hidden="true">0{i + 1}</span>
+              <span class="mb-auto inline-flex h-14 w-14 items-center justify-center rounded-full bg-blanco/70 text-bosque-800"><Icon name={pillarStyles[i].icon} class="h-7 w-7" /></span>
+              <h3 class="font-display text-[2.1rem] font-semibold uppercase tracking-tight text-bosque-900 lg:text-[2.35rem]">{p.title}</h3>
+              <p class="mt-2 text-lg text-bosque-800">{p.text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- HISTORIA (storytelling) -->
+  <section class="relative overflow-hidden bg-crema py-20 md:py-32" aria-labelledby="historia-title">
+    <div class="container-alma">
+      <SectionTitle eyebrow={story.eyebrow} title="Un sendero que empezó con una idea sencilla" center id="historia-title" />
+      <div class="relative mt-16 md:mt-24">
+        <svg class="pointer-events-none absolute left-1/2 top-0 hidden h-full w-24 -translate-x-1/2 md:block" viewBox="0 0 100 1000" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M50 0 C 90 160, 10 330, 50 500 C 90 670, 10 840, 50 1000" fill="none" stroke="var(--color-arena-300)" stroke-width="3" stroke-dasharray="2 14" stroke-linecap="round" vector-effect="non-scaling-stroke" />
+        </svg>
+        <ol class="space-y-20 md:space-y-32">
+          {story.chapters.map((c, i) => (
+            <li class="relative grid items-center gap-8 md:grid-cols-2 md:gap-20">
+              <div class:list={['reveal relative', i % 2 === 1 && 'md:order-2']}>
+                <div class:list={['aspect-[5/4] overflow-hidden shadow-xl', i % 2 === 0 ? 'blob-1' : 'blob-2']}>
+                  <Photo src={c.image} alt={c.imageAlt} hint={c.imageAlt} scene={storyScenes[i].scene} tone={storyScenes[i].tone} hintPos="blob" />
+                </div>
+              </div>
+              <div class:list={['reveal', i % 2 === 1 && 'md:order-1 md:text-right']} style="--d:120ms">
+                <span class="font-display text-6xl font-semibold text-terracota-500/40" aria-hidden="true">0{i + 1}</span>
+                <h3 class="mt-2 text-3xl text-bosque-900 md:text-4xl">{c.title}</h3>
+                <p class="mt-4 text-lg leading-relaxed text-tinta-suave">{c.text}</p>
+              </div>
+              {i < story.chapters.length - 1 && <PawTrail count={4} class="absolute -bottom-28 left-1/2 hidden -translate-x-1/2 md:flex" />}
+            </li>
+          ))}
+        </ol>
+      </div>
+      <div class="reveal mx-auto mt-24 max-w-4xl text-center">
+        <p class="font-display text-3xl font-medium text-terracota-700 md:text-[2.6rem]" style="font-variation-settings:'SOFT' 100">
+          <span class="whitespace-nowrap">Educamos ·</span> <span class="whitespace-nowrap">Conectamos ·</span> <span class="whitespace-nowrap">Transformamos</span>
+        </p>
+        <p class="mt-3 text-xl text-tinta-suave md:text-2xl">{settings.promise}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUIÉNES SOMOS -->
+  <section class="relative bg-blanco py-20 md:py-28" aria-labelledby="quienes-title">
+    <div class="container-alma grid items-center gap-12 lg:grid-cols-12">
+      <div class="reveal relative lg:col-span-5">
+        <div class="blob-2 aspect-[4/5] overflow-hidden shadow-xl">
+          <Photo src={about.image} alt={about.imageAlt} hint="Educadora guiando a un tutor y su perro" scene="workshop" tone="sage" hintPos="blob" />
+        </div>
+        <div class="absolute -bottom-6 -right-2 rounded-3xl bg-bosque-800 px-6 py-5 text-blanco shadow-xl md:-right-8">
+          <p class="text-sm text-salvia-200">Ubicados en</p>
+          <p class="font-display text-2xl">{loc.municipality}, {loc.department}</p>
+        </div>
+      </div>
+      <div class="lg:col-span-7 lg:pl-8">
+        <SectionTitle eyebrow={about.eyebrow} title={about.title} id="quienes-title" />
+        <p class="reveal mt-6 text-lg text-tinta-suave">{about.text}</p>
+        <blockquote class="reveal mt-10 border-l-4 border-terracota-500 pl-6">
+          <p class="font-display text-2xl leading-snug text-bosque-900 md:text-[2rem]" style="font-variation-settings:'SOFT' 100">“{about.highlight}”</p>
+        </blockquote>
+        <a href="/alma-canina/" class="btn btn-primary reveal mt-10">Conoce nuestra historia <Icon name="arrow" class="h-5 w-5" /></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCIAS -->
+  <section class="ball-zone relative bg-salvia-100 py-20 md:py-28" aria-labelledby="exp-title">
+    <div class="container-alma">
+      <div class="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+        <SectionTitle eyebrow={experiencesIntro.eyebrow} title={experiencesIntro.title} text={experiencesIntro.text} id="exp-title" />
+        <div class="relative h-16 w-40 shrink-0" aria-hidden="true">
+          <span class="ball absolute bottom-0 left-6 h-9 w-9 rounded-full bg-terracota-500 shadow-[inset_-6px_-6px_0_rgb(0_0_0/0.12)]">
+            <svg viewBox="0 0 36 36" class="h-full w-full"><path d="M4 12 C 14 16, 22 16, 32 12 M4 24 C 14 20, 22 20, 32 24" stroke="var(--color-blanco)" stroke-width="2" fill="none" opacity=".7" /></svg>
+          </span>
+        </div>
+      </div>
+      <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+        {experiences.map((exp, i) => <ExperienceCard exp={exp} index={i} peek={i === 0 || i === 4} />)}
+      </div>
+      <div class="mt-12 text-center">
+        <a href="/experiencias/" class="btn btn-primary">Ver todas las experiencias <Icon name="arrow" class="h-5 w-5" /></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CIFRAS REALES DEL SITIO -->
+  <section class="bg-blanco py-16" aria-label="Alma Canina en cifras">
+    <div class="container-alma">
+      <dl class="grid grid-cols-1 gap-6 text-center sm:grid-cols-3">
+        <div class="reveal flex flex-col-reverse rounded-[2rem] bg-crema px-6 py-8">
+          <dt class="mt-2 text-tinta-suave">líneas de experiencias y servicios</dt>
+          <dd class="font-display text-6xl font-semibold text-bosque-900" data-count={experiences.length}>{experiences.length}</dd>
+        </div>
+        <div class="reveal flex flex-col-reverse rounded-[2rem] bg-crema px-6 py-8" style="--d:100ms">
+          <dt class="mt-2 text-tinta-suave">leyes de protección animal explicadas</dt>
+          <dd class="font-display text-6xl font-semibold text-bosque-900" data-count={laws.length}>{laws.length}</dd>
+        </div>
+        <div class="reveal flex flex-col-reverse rounded-[2rem] bg-crema px-6 py-8" style="--d:200ms">
+          <dt class="mt-2 text-tinta-suave">proyectos de ley en seguimiento</dt>
+          <dd class="font-display text-6xl font-semibold text-bosque-900" data-count={bills.length}>{bills.length}</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- LEGISLACIÓN -->
+  <section class="relative overflow-hidden bg-bosque-900 py-20 text-blanco md:py-28" aria-labelledby="leg-title">
+    <div aria-hidden="true" class="blob-1 absolute -right-40 -top-40 h-[32rem] w-[32rem] bg-bosque-800"></div>
+    <div class="container-alma relative">
+      <div class="grid gap-10 lg:grid-cols-12 lg:items-end">
+        <div class="lg:col-span-7">
+          <div class="paw-doc mb-6 text-terracota-300" aria-hidden="true">
+            <svg class="paw" viewBox="0 0 24 24" fill="currentColor"><ellipse cx="7" cy="8" rx="2.2" ry="2.8" /><ellipse cx="17" cy="8" rx="2.2" ry="2.8" /><ellipse cx="3.6" cy="13" rx="1.9" ry="2.4" /><ellipse cx="20.4" cy="13" rx="1.9" ry="2.4" /><path d="M12 12c-3.2 0-5.4 3.5-5.4 5.6 0 1.7 1.5 2.5 2.9 2.2 1-.2 1.6-.8 2.5-.8s1.5.6 2.5.8c1.4.3 2.9-.5 2.9-2.2 0-2.1-2.2-5.6-5.4-5.6z" /></svg>
+            <svg class="doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6zM14 3v5h5M9 12h7M9 15.5h7M9 19h4" /></svg>
+          </div>
+          <SectionTitle eyebrow={legislationTeaser.eyebrow} title={legislationTeaser.title} text={legislationTeaser.text} light id="leg-title" />
+        </div>
+        <div class="reveal lg:col-span-5 lg:text-right">
+          <a href="/legislacion/" class="btn btn-light">{legislationTeaser.cta} <Icon name="arrow" class="h-5 w-5" /></a>
+        </div>
+      </div>
+      <div class="mt-12 grid gap-6 text-tinta md:grid-cols-3">
+        {featuredLaws.map((l, i) => <LawCard item={l} index={i} />)}
+      </div>
+      <a href="/legislacion/#orientacion" class="reveal mt-8 flex flex-col items-start gap-4 rounded-[2rem] bg-bosque-800 p-6 no-underline transition hover:bg-bosque-700 md:flex-row md:items-center md:justify-between md:p-8">
+        <span class="flex items-center gap-4">
+          <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-terracota-500"><Icon name="info" class="h-6 w-6" /></span>
+          <span><span class="block font-display text-2xl">¿Necesitas orientación?</span><span class="text-salvia-200">Elige tu situación y te mostramos qué normas aplican.</span></span>
+        </span>
+        <Icon name="arrow" class="h-6 w-6" />
+      </a>
+    </div>
+  </section>
+
+  <!-- AGENDA -->
+  <section class="bg-blanco py-20 md:py-28" aria-labelledby="agenda-title">
+    <div class="container-alma">
+      <SectionTitle eyebrow="Agenda" title={community.agenda.title} ears id="agenda-title" />
+      {upcoming.length > 0 ? (
+        <div class="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {upcoming.slice(0, 3).map((ev, i) => <EventCard ev={ev} index={i} />)}
+        </div>
+      ) : (
+        <div class="reveal mt-12 flex flex-col items-start gap-6 rounded-[2rem] bg-crema p-8 md:flex-row md:items-center md:justify-between md:p-10">
+          <div class="flex items-center gap-5">
+            <DogSide class="h-14 w-auto shrink-0 text-bosque-800" />
+            <p class="max-w-xl text-lg text-tinta-suave">{community.agenda.emptyText}</p>
+          </div>
+          <a href="/contacto/?interes=Eventos#formulario" class="btn btn-primary shrink-0">Avísame</a>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- TENJO -->
+  <section class="relative isolate overflow-hidden bg-bosque-950 text-blanco" aria-labelledby="tenjo-title">
+    <div class="absolute inset-0 -z-10">
+      <div class="parallax h-full w-full" data-speed="0.06">
+        {tenjo.video ? (
+          <video class="h-full w-full object-cover" autoplay muted loop playsinline aria-hidden="true"><source src={tenjo.video} type="video/mp4" /></video>
+        ) : (
+          <Photo src={tenjo.image} alt={tenjo.imageAlt} hint="Paisaje del entorno natural en Tenjo" scene="forest" tone="dawn" sizes="100vw" />
+        )}
+      </div>
+      <div class="absolute inset-0 bg-gradient-to-t from-bosque-950/90 via-bosque-950/50 to-bosque-950/10"></div>
+    </div>
+    <div class="container-alma flex min-h-[80vh] flex-col justify-end py-20 md:py-28">
+      <p class="eyebrow eyebrow-light reveal">{loc.municipality}, {loc.department}</p>
+      <h2 id="tenjo-title" class="display-lg reveal mt-4 max-w-3xl text-blanco">{tenjo.title}</h2>
+      <p class="lead reveal mt-5 max-w-xl !text-salvia-100">{tenjo.text}</p>
+      <div class="reveal mt-8 flex flex-wrap gap-3">
+        {loc.hours && <span class="chip bg-blanco/15 text-blanco backdrop-blur"><Icon name="clock" class="h-4 w-4" />{loc.hours}</span>}
+        {loc.address ? (
+          <span class="chip bg-blanco/15 text-blanco backdrop-blur"><Icon name="pin" class="h-4 w-4" />{loc.address}</span>
+        ) : (
+          <span class="chip bg-blanco/15 text-blanco backdrop-blur"><Icon name="pin" class="h-4 w-4" />Ubicación exacta al reservar</span>
+        )}
+        <a href="/alma-canina/#tenjo" class="chip bg-blanco text-bosque-900 no-underline">Cómo llegar <Icon name="arrow" class="h-4 w-4" /></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="bg-blanco py-24 md:py-32">
+    <div class="container-alma text-center">
+      <p class="reveal mx-auto max-w-4xl font-display text-[2.2rem] font-medium leading-tight text-bosque-900 md:text-6xl" style="font-variation-settings:'SOFT' 100">
+        {finalCta.title} <span class="text-terracota-700">{finalCta.highlight}</span>
+      </p>
+      <div class="reveal mt-10 flex flex-col justify-center gap-3 sm:flex-row" style="--d:120ms">
+        <a href="/experiencias/" class="btn btn-terracota btn-tail">
+          {finalCta.cta}
+          <svg class="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true"><path class="tail" d="M2 14 C 8 13, 14 8, 16 2" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" /><circle cx="19" cy="18" r="3" fill="currentColor" /></svg>
+        </a>
+        <a href="/contacto/" class="btn btn-ghost text-bosque-900">Hablemos</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

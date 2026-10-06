@@ -1,0 +1,39 @@
+{
+  "intro": {
+    "eyebrow": "Alma Canina",
+    "title": "Educar también es una forma de amar",
+    "text": "Somos un club de educación, bienestar, experiencias y cultura animal donde personas y perros aprenden a vivir mejor juntos."
+  },
+  "whoWeAre": [
+    "Alma Canina es un club canino de educación, bienestar y conexión familiar, ubicado en Tenjo, Cundinamarca.",
+    "Creamos experiencias para que las personas puedan compartir con sus perros en un entorno campestre, seguro y pensado para ellos, mientras adquieren herramientas que les permitan mejorar su convivencia, educación y cuidado.",
+    "Contamos con espacios para actividades de entrenamiento, estimulación, socialización y aprendizaje, acompañados por profesionales y aliados especializados.",
+    "Además, desarrollamos talleres, cursos, encuentros y experiencias educativas para tutores y personas vinculadas al mundo animal."
+  ],
+  "highlight": "No buscamos simplemente cuidar perros. Queremos enseñar a las personas a cuidarlos, entenderlos y disfrutar la vida junto a ellos.",
+  "audience": {
+    "title": "Un punto de encuentro",
+    "text": "También podemos desarrollar experiencias y capacitaciones dirigidas a tutores, familias, adiestradores, groomers, paseadores y otros profesionales relacionados con el bienestar animal.",
+    "groups": ["Familias", "Tutores", "Adiestradores", "Groomers", "Paseadores", "Profesionales del bienestar animal", "Educadores", "Proteccionistas"]
+  },
+  "mission": {
+    "text": "Crear experiencias que fortalezcan el vínculo entre las personas y sus animales de compañía mediante la educación, el bienestar, la actividad física y el tiempo de calidad en familia, brindando herramientas que permitan comprenderlos, cuidarlos y convivir mejor con ellos.",
+    "complement": "Queremos formar tutores más conscientes y construir una comunidad que entienda que educar también es una forma de amar."
+  },
+  "vision": {
+    "text": "Convertir a Alma Canina en un referente de educación, bienestar y experiencias caninas en Cundinamarca, reconocido por crear una comunidad en la que familias, profesionales y amantes de los animales puedan aprender, compartir y crecer junto a sus peludos.",
+    "complement": "A futuro buscamos ampliar nuestras experiencias, programas educativos, alianzas profesionales y actividades de bienestar, manteniendo siempre la esencia que dio origen a Alma Canina: perros más felices, humanos más conscientes y familias más conectadas."
+  },
+  "pillars": [
+    { "title": "Educación canina", "text": "Herramientas para comprender y acompañar a los perros." },
+    { "title": "Bienestar animal", "text": "Cada actividad se piensa desde el bienestar del animal." },
+    { "title": "Naturaleza", "text": "Un entorno campestre para salir de la rutina." },
+    { "title": "Comunidad", "text": "Familias, tutores y profesionales que aprenden juntos." },
+    { "title": "Formación", "text": "Talleres y cursos con profesionales invitados." },
+    { "title": "Cultura ciudadana", "text": "Derechos y legislación animal explicados para todos." }
+  ],
+  "teamIntro": {
+    "title": "Nuestra manada profesional",
+    "text": "Profesionales y aliados especializados que acompañan cada experiencia."
+  }
+}

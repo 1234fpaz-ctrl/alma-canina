@@ -1,0 +1,201 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import LawCard from '../../components/LawCard.astro';
+import Icon from '../../components/Icon.astro';
+import { LAW_TAGS, LEGAL_DISCLAIMER } from '../../lib/site';
+import { getLaws, getBills } from '../../lib/content';
+import { breadcrumbSchema } from '../../lib/schema';
+import guidance from '../../data/guidance.json';
+
+const laws = await getLaws();
+const bills = await getBills();
+const crumbs = [{ name: 'Inicio', path: '/' }, { name: 'Legislación', path: '/legislacion/' }];
+const lawMap = Object.fromEntries(laws.map((l) => [l.id, l]));
+const billMap = Object.fromEntries(bills.map((b) => [b.id, b]));
+---
+<BaseLayout
+  overlayHeader
+  title="Centro de legislación y protección animal en Colombia"
+  description="Leyes de protección animal en Colombia explicadas en lenguaje ciudadano: Ley Ángel, Ley Kiara, Ley Lorenzo, Ley Empatía, Esterilizar Salva y más. Seguimiento a proyectos de ley."
+  schema={[breadcrumbSchema(Astro.site!, crumbs)]}
+>
+  <PageHero eyebrow="Centro de legislación y protección animal" title="Conocer la ley también es una forma de cuidar" text="Explicamos las normas que protegen a los animales en Colombia con un lenguaje claro, rutas prácticas y fuentes oficiales." crumbs={crumbs} tone="bosque">
+    <div class="paw-doc mt-10 text-terracota-300" aria-hidden="true">
+      <svg class="paw" viewBox="0 0 24 24" fill="currentColor"><ellipse cx="7" cy="8" rx="2.2" ry="2.8" /><ellipse cx="17" cy="8" rx="2.2" ry="2.8" /><ellipse cx="3.6" cy="13" rx="1.9" ry="2.4" /><ellipse cx="20.4" cy="13" rx="1.9" ry="2.4" /><path d="M12 12c-3.2 0-5.4 3.5-5.4 5.6 0 1.7 1.5 2.5 2.9 2.2 1-.2 1.6-.8 2.5-.8s1.5.6 2.5.8c1.4.3 2.9-.5 2.9-2.2 0-2.1-2.2-5.6-5.4-5.6z" /></svg>
+      <svg class="doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6zM14 3v5h5M9 12h7M9 15.5h7M9 19h4" /></svg>
+    </div>
+  </PageHero>
+
+  <section class="bg-blanco pb-20 pt-4" aria-label="Leyes y proyectos de ley" data-legal-explorer>
+    <div class="container-alma">
+      <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+        <div role="tablist" aria-label="Tipo de norma" class="inline-flex self-start rounded-full bg-salvia-100 p-1.5">
+          <button role="tab" id="tab-leyes" aria-controls="panel-leyes" aria-selected="true" class="tab-btn min-h-12 rounded-full bg-bosque-800 px-6 font-semibold text-blanco transition" data-tab="leyes">Leyes <span class="ml-1 opacity-70">{laws.length}</span></button>
+          <button role="tab" id="tab-proyectos" aria-controls="panel-proyectos" aria-selected="false" tabindex="-1" class="tab-btn min-h-12 rounded-full px-6 font-semibold text-bosque-900 transition" data-tab="proyectos">Proyectos de ley <span class="ml-1 opacity-70">{bills.length}</span></button>
+        </div>
+        <label class="relative block w-full lg:max-w-sm">
+          <span class="sr-only">Buscar normas</span>
+          <Icon name="search" class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-tinta-suave" />
+          <input type="search" data-q placeholder="Buscar por nombre, número o tema" class="h-14 w-full rounded-full border-2 border-salvia-200 bg-blanco pl-12 pr-5 focus:border-bosque-600 focus:outline-none" autocomplete="off" />
+        </label>
+      </div>
+      <div class="mt-5 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none]" role="toolbar" aria-label="Filtrar por tema">
+        <span class="inline-flex shrink-0 items-center gap-1.5 pr-1 text-sm font-semibold text-tinta-suave"><Icon name="filter" class="h-4 w-4" />Temas:</span>
+        {Object.entries(LAW_TAGS).map(([k, v]) => (
+          <button type="button" class="tag-btn chip min-h-10 shrink-0 border-2 border-salvia-200 bg-blanco px-4 text-[0.9rem] font-medium text-bosque-900 hover:border-bosque-600" data-tag={k} aria-pressed="false">{v}</button>
+        ))}
+      </div>
+      <p class="sr-only" aria-live="polite" data-status></p>
+
+      <div id="panel-leyes" role="tabpanel" aria-labelledby="tab-leyes" class="mt-10" data-panel="leyes">
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">{laws.map((l, i) => <LawCard item={l} index={i} filterable />)}</div>
+        <p class="mt-8 hidden rounded-3xl bg-crema p-6 text-center text-tinta-suave" data-empty>No encontramos leyes con esos criterios.</p>
+      </div>
+      <div id="panel-proyectos" role="tabpanel" aria-labelledby="tab-proyectos" class="mt-10" data-panel="proyectos" hidden>
+        <p class="mb-6 flex gap-3 rounded-3xl border-2 border-dashed border-cielo-400 bg-cielo-200/40 p-5 text-tinta">
+          <Icon name="info" class="mt-0.5 h-5 w-5 shrink-0 text-cielo-700" />
+          <span><strong>Los proyectos de ley no son leyes vigentes.</strong> Pueden archivarse, radicarse nuevamente o cambiar de número. Cada ficha muestra la última etapa conocida y la fecha de actualización.</span>
+        </p>
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">{bills.map((b, i) => <LawCard item={b} index={i} filterable />)}</div>
+        <p class="mt-8 hidden rounded-3xl bg-crema p-6 text-center text-tinta-suave" data-empty>No encontramos proyectos con esos criterios.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Herramienta ciudadana -->
+  <section id="orientacion" class="bg-salvia-100 py-20 md:py-28" aria-labelledby="orientacion-title">
+    <div class="container-alma">
+      <div class="max-w-3xl">
+        <p class="eyebrow reveal">Herramienta ciudadana</p>
+        <h2 id="orientacion-title" class="display-md reveal mt-3 text-bosque-900">{guidance.title}</h2>
+        <p class="lead reveal mt-4">{guidance.intro}</p>
+      </div>
+      <div class="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3" role="list">
+        {guidance.situations.map((s, i) => (
+          <div role="listitem" class="reveal" style={`--d:${(i % 3) * 70}ms`}>
+            <button type="button" class="situation-btn group flex h-full min-h-24 w-full items-center gap-4 rounded-3xl border-2 border-transparent bg-blanco p-5 text-left font-semibold text-bosque-900 transition hover:-translate-y-0.5 hover:border-salvia-400 aria-expanded:border-bosque-700 aria-expanded:bg-bosque-800 aria-expanded:text-blanco" aria-expanded="false" aria-controls={`sit-${s.id}`} data-sit={s.id}>
+              <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-salvia-100 text-bosque-800 group-aria-expanded:bg-terracota-500 group-aria-expanded:text-blanco"><Icon name={s.icon} class="h-6 w-6" /></span>
+              <span class="text-[1.05rem] leading-snug">{s.title}</span>
+            </button>
+          </div>
+        ))}
+      </div>
+      {guidance.situations.map((s) => (
+        <div id={`sit-${s.id}`} class="situation-panel pop-in mt-6 rounded-[2rem] bg-blanco p-6 shadow-lg md:p-10" hidden tabindex="-1" aria-label={s.title}>
+          <h3 class="text-3xl text-bosque-900">{s.title}</h3>
+          <p class="mt-3 max-w-3xl text-lg text-tinta-suave">{s.intro}</p>
+          <ol class="mt-6 grid gap-3 md:grid-cols-2">
+            {s.steps.map((st, i) => (
+              <li class="flex gap-4 rounded-2xl bg-salvia-50 p-4">
+                <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-bosque-800 text-sm font-bold text-blanco">{i + 1}</span>
+                <span class="text-tinta">{st}</span>
+              </li>
+            ))}
+          </ol>
+          {(s.laws.length > 0 || s.bills.length > 0) && (
+            <div class="mt-8">
+              <p class="font-semibold text-bosque-900">Normas relacionadas</p>
+              <ul class="mt-3 flex flex-wrap gap-2">
+                {s.laws.filter((id) => lawMap[id]).map((id) => (
+                  <li><a href={`/legislacion/${id}/`} class="chip bg-salvia-200 font-semibold text-bosque-900 no-underline hover:bg-salvia-300"><Icon name="scale" class="h-4 w-4" />{lawMap[id].data.popularName} · Ley {lawMap[id].data.lawNumber}</a></li>
+                ))}
+                {s.bills.filter((id) => billMap[id]).map((id) => (
+                  <li><a href={`/legislacion/proyectos/${id}/`} class="chip border-2 border-dashed border-cielo-400 bg-cielo-200/50 font-semibold text-cielo-700 no-underline"><Icon name="doc" class="h-4 w-4" />{billMap[id].data.popularName} · Proyecto</a></li>
+                ))}
+              </ul>
+            </div>
+          )}
+          <p class="mt-8 flex gap-3 rounded-2xl bg-crema p-4 text-sm text-tinta"><Icon name="alert" class="h-5 w-5 shrink-0 text-terracota-700" />{guidance.disclaimer}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="bg-blanco py-14">
+    <div class="container-alma">
+      <p class="mx-auto max-w-3xl text-center text-tinta-suave">{LEGAL_DISCLAIMER} Fuentes prioritarias: Congreso de la República, SUIN-Juriscol (Ministerio de Justicia), textos oficiales y, como fuente pedagógica y de contexto, el sitio de la senadora Andrea Padilla.</p>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-legal-explorer]');
+  if (root) {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('.tab-btn'));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>('[data-panel]'));
+    const tagBtns = Array.from(root.querySelectorAll<HTMLButtonElement>('.tag-btn'));
+    const q = root.querySelector<HTMLInputElement>('[data-q]')!;
+    const status = root.querySelector<HTMLElement>('[data-status]');
+    let active = 'leyes';
+    const tags = new Set<string>();
+    const norm = (s: string) => s.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '');
+
+    const apply = () => {
+      const term = norm(q.value.trim());
+      let count = 0;
+      panels.forEach((p) => {
+        const cards = Array.from(p.querySelectorAll<HTMLElement>('.filterable'));
+        let shown = 0;
+        cards.forEach((c) => {
+          const ct = (c.dataset.tags || '').split(' ');
+          const ok = (!term || norm(c.dataset.search || '').includes(term)) && (tags.size === 0 || [...tags].some((t) => ct.includes(t)));
+          if (ok) { c.hidden = false; requestAnimationFrame(() => c.classList.remove('is-hiding')); shown++; }
+          else { c.classList.add('is-hiding'); setTimeout(() => { if (c.classList.contains('is-hiding')) c.hidden = true; }, 300); }
+        });
+        p.querySelector('[data-empty]')?.classList.toggle('hidden', shown > 0);
+        if (p.dataset.panel === active) count = shown;
+      });
+      if (status) status.textContent = `${count} resultado${count === 1 ? '' : 's'}`;
+    };
+
+    const select = (name: string, focus = false) => {
+      active = name;
+      tabs.forEach((t) => {
+        const on = t.dataset.tab === name;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        t.classList.toggle('bg-bosque-800', on); t.classList.toggle('text-blanco', on); t.classList.toggle('text-bosque-900', !on);
+        if (on && focus) t.focus();
+      });
+      panels.forEach((p) => (p.hidden = p.dataset.panel !== name));
+      history.replaceState(null, '', name === 'proyectos' ? '#proyectos' : location.pathname + location.search);
+      apply();
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(t.dataset.tab!));
+      t.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+          const n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+          select(n.dataset.tab!, true);
+        }
+      });
+    });
+    tagBtns.forEach((b) => b.addEventListener('click', () => {
+      const t = b.dataset.tag!;
+      tags.has(t) ? tags.delete(t) : tags.add(t);
+      const on = tags.has(t);
+      b.setAttribute('aria-pressed', String(on));
+      b.classList.toggle('bg-bosque-800', on); b.classList.toggle('text-blanco', on); b.classList.toggle('border-bosque-800', on); b.classList.toggle('bg-blanco', !on);
+      apply();
+    }));
+    q.addEventListener('input', apply);
+    if (location.hash === '#proyectos') select('proyectos');
+  }
+
+  // Herramienta ciudadana
+  const sitBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('.situation-btn'));
+  sitBtns.forEach((btn) => btn.addEventListener('click', () => {
+    const id = btn.dataset.sit!;
+    const panel = document.getElementById(`sit-${id}`)!;
+    const opening = btn.getAttribute('aria-expanded') !== 'true';
+    sitBtns.forEach((b) => b.setAttribute('aria-expanded', 'false'));
+    document.querySelectorAll<HTMLElement>('.situation-panel').forEach((p) => (p.hidden = true));
+    if (opening) {
+      btn.setAttribute('aria-expanded', 'true');
+      panel.hidden = false;
+      panel.focus({ preventScroll: true });
+      panel.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' });
+    }
+  }));
+</script>

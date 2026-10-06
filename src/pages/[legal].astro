@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import { getCollection, render } from 'astro:content';
+import { settings, formatDate } from '../lib/site';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('pages');
+  return pages.map((page) => ({ params: { legal: page.id }, props: { page } }));
+}
+const { page } = Astro.props;
+const { Content } = await render(page);
+const legal = settings.legal;
+const pending = 'Pendiente de configurar';
+---
+<BaseLayout title={page.data.title} description={page.data.description}>
+  <PageHero title={page.data.title} crumbs={[{ name: 'Inicio', path: '/' }, { name: page.data.title, path: `/${page.id}/` }]} tone="crema" />
+  <section class="bg-blanco pb-24 pt-6">
+    <div class="container-alma max-w-4xl">
+      <dl class="grid gap-4 rounded-[2rem] bg-salvia-50 p-6 sm:grid-cols-2">
+        <div><dt class="text-sm font-semibold uppercase tracking-wider text-tinta-suave">Responsable</dt><dd class="text-bosque-900">{legal.responsibleName || pending}</dd></div>
+        <div><dt class="text-sm font-semibold uppercase tracking-wider text-tinta-suave">Identificación (NIT / C.C.)</dt><dd class="text-bosque-900">{legal.responsibleId || pending}</dd></div>
+        <div><dt class="text-sm font-semibold uppercase tracking-wider text-tinta-suave">Correo para datos personales</dt><dd class="text-bosque-900">{legal.privacyEmail || settings.contact.email || pending}</dd></div>
+        <div><dt class="text-sm font-semibold uppercase tracking-wider text-tinta-suave">Domicilio</dt><dd class="text-bosque-900">{legal.privacyAddress || `${settings.location.municipality}, ${settings.location.department}`}</dd></div>
+      </dl>
+      <div class="prose-alma mt-10 text-lg"><Content /></div>
+      <p class="mt-10 text-sm text-tinta-suave">Última actualización: {formatDate(page.data.lastUpdated)}</p>
+    </div>
+  </section>
+</BaseLayout>

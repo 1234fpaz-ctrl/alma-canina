@@ -1,0 +1,612 @@
+# ============================================================================
+#  ALMA CANINA — ADMINISTRADOR
+#  CMS: Sveltia CMS (Git-based, compatible con Decap CMS).
+#  Autenticación directa con GitHub (OAuth de Netlify o token personal).
+#  NO usa Netlify Identity ni Git Gateway.
+#
+#  ⚠️ ÚNICO CAMBIO OBLIGATORIO: reemplaza USUARIO-GITHUB por el usuario de GitHub
+#  dueño del repositorio privado (ver README, paso 4).
+# ============================================================================
+
+backend:
+  name: github
+  repo: USUARIO-GITHUB/alma-canina
+  branch: main
+  commit_messages:
+    create: "Crear {{collection}} «{{slug}}»"
+    update: "Actualizar {{collection}} «{{slug}}»"
+    delete: "Eliminar {{collection}} «{{slug}}»"
+    uploadMedia: "Subir archivo «{{path}}»"
+    deleteMedia: "Eliminar archivo «{{path}}»"
+
+logo_url: /favicon.svg
+
+media_folder: public/images/uploads
+public_folder: /images/uploads
+
+slug:
+  encoding: ascii
+  clean_accents: true
+  sanitize_replacement: "-"
+
+collections:
+  # --------------------------------------------------------------------------
+  - name: inicio
+    label: "🏠 Inicio"
+    description: "Textos e imágenes de la página de inicio y de la página Alma Canina."
+    files:
+      - name: home
+        label: "Página de inicio"
+        file: src/data/home.json
+        format: json
+        fields:
+          - label: "Portada (hero)"
+            name: hero
+            widget: object
+            fields:
+              - { label: "Texto pequeño superior", name: eyebrow, widget: string }
+              - { label: "Título", name: title, widget: string, hint: "La última palabra se resalta en terracota." }
+              - { label: "Subtítulo", name: subtitle, widget: text }
+              - { label: "Texto breve", name: text, widget: text }
+              - { label: "Botón principal", name: primaryCta, widget: string }
+              - { label: "Botón secundario", name: secondaryCta, widget: string }
+              - { label: "Fotografía de portada", name: image, widget: image, required: false }
+              - { label: "Descripción de la foto (accesibilidad)", name: imageAlt, widget: string }
+              - { label: "Video de portada (MP4, opcional)", name: video, widget: file, required: false, hint: "Si subes un video, reemplaza la foto. Usa un MP4 corto y liviano (menos de 8 MB)." }
+          - label: "Bloque «Alma Canina es…»"
+            name: pillars
+            widget: list
+            fields:
+              - { label: "Título", name: title, widget: string }
+              - { label: "Texto", name: text, widget: string }
+          - label: "Nuestra historia"
+            name: story
+            widget: object
+            fields:
+              - { label: "Texto pequeño superior", name: eyebrow, widget: string }
+              - label: "Capítulos"
+                name: chapters
+                widget: list
+                fields:
+                  - { label: "Título", name: title, widget: string }
+                  - { label: "Texto", name: text, widget: text }
+                  - { label: "Fotografía", name: image, widget: image, required: false }
+                  - { label: "Descripción de la foto", name: imageAlt, widget: string }
+          - label: "¿Quiénes somos? (resumen en inicio)"
+            name: about
+            widget: object
+            fields:
+              - { label: "Texto pequeño superior", name: eyebrow, widget: string }
+              - { label: "Título", name: title, widget: string }
+              - { label: "Texto", name: text, widget: text }
+              - { label: "Frase destacada", name: highlight, widget: text }
+              - { label: "Fotografía", name: image, widget: image, required: false }
+              - { label: "Descripción de la foto", name: imageAlt, widget: string }
+          - label: "Introducción de Experiencias"
+            name: experiencesIntro
+            widget: object
+            fields:
+              - { label: "Texto pequeño superior", name: eyebrow, widget: string }
+              - { label: "Título", name: title, widget: string }
+              - { label: "Texto", name: text, widget: text }
+          - label: "Bloque de Legislación"
+            name: legislationTeaser
+            widget: object
+            fields:
+              - { label: "Texto pequeño superior", name: eyebrow, widget: string }
+              - { label: "Título", name: title, widget: string }
+              - { label: "Texto", name: text, widget: text }
+              - { label: "Botón", name: cta, widget: string }
+          - label: "Sección Tenjo"
+            name: tenjo
+            widget: object
+            fields:
+              - { label: "Título", name: title, widget: string }
+              - { label: "Texto", name: text, widget: text }
+              - { label: "Fotografía", name: image, widget: image, required: false }
+              - { label: "Descripción de la foto", name: imageAlt, widget: string }
+              - { label: "Video (MP4, opcional)", name: video, widget: file, required: false }
+          - label: "Llamado final"
+            name: finalCta
+            widget: object
+            fields:
+              - { label: "Frase", name: title, widget: string }
+              - { label: "Frase resaltada", name: highlight, widget: string }
+              - { label: "Botón", name: cta, widget: string }
+
+      - name: about
+        label: "Alma Canina: quiénes somos, misión y visión"
+        file: src/data/about.json
+        format: json
+        fields:
+          - label: "Encabezado"
+            name: intro
+            widget: object
+            fields:
+              - { label: "Texto pequeño superior", name: eyebrow, widget: string }
+              - { label: "Título", name: title, widget: string }
+              - { label: "Texto", name: text, widget: text }
+          - { label: "¿Quiénes somos? (párrafos)", name: whoWeAre, widget: list, field: { label: "Párrafo", name: p, widget: text } }
+          - { label: "Frase destacada", name: highlight, widget: text }
+          - label: "Público"
+            name: audience
+            widget: object
+            fields:
+              - { label: "Título", name: title, widget: string }
+              - { label: "Texto", name: text, widget: text }
+              - { label: "Grupos", name: groups, widget: list, field: { label: "Grupo", name: g, widget: string } }
+          - label: "Misión"
+            name: mission
+            widget: object
+            fields:
+              - { label: "Texto", name: text, widget: text }
+              - { label: "Complemento", name: complement, widget: text }
+          - label: "Visión"
+            name: vision
+            widget: object
+            fields:
+              - { label: "Texto", name: text, widget: text }
+              - { label: "Complemento", name: complement, widget: text }
+          - label: "Lo que nos mueve"
+            name: pillars
+            widget: list
+            fields:
+              - { label: "Título", name: title, widget: string }
+              - { label: "Texto", name: text, widget: string }
+          - label: "Introducción del equipo"
+            name: teamIntro
+            widget: object
+            fields:
+              - { label: "Título", name: title, widget: string }
+              - { label: "Texto", name: text, widget: text }
+
+  # --------------------------------------------------------------------------
+  - name: experiences
+    label: "🐾 Experiencias"
+    label_singular: "Experiencia"
+    description: "Experiencias y servicios. Cada una tiene su propia página."
+    folder: src/content/experiences
+    create: true
+    slug: "{{slug}}"
+    sortable_fields: [order, title]
+    summary: "{{order}} · {{title}}"
+    fields:
+      - { label: "Nombre", name: title, widget: string }
+      - label: "Tipo"
+        name: category
+        widget: select
+        options:
+          - { label: "Educación", value: educacion }
+          - { label: "Tutor + perro", value: tutor-perro }
+          - { label: "Cursos y talleres", value: cursos }
+          - { label: "Spa & Grooming", value: spa }
+          - { label: "Bienestar", value: bienestar }
+          - { label: "Eventos y comunidad", value: eventos }
+      - { label: "Orden (1 = primero)", name: order, widget: number, value_type: int, default: 10 }
+      - { label: "Frase corta", name: tagline, widget: string }
+      - { label: "Resumen", name: summary, widget: text }
+      - { label: "Qué incluye", name: items, widget: list, field: { label: "Ítem", name: item, widget: string } }
+      - { label: "Fotografía", name: image, widget: image, required: false }
+      - { label: "Descripción de la foto", name: imageAlt, widget: string, required: false }
+      - { label: "Indicación de foto pendiente", name: photoHint, widget: string, required: false, hint: "Texto que aparece mientras no hay foto." }
+      - { label: "Precio / inversión", name: price, widget: string, required: false, hint: "Déjalo vacío para mostrar «Consúltanos»." }
+      - { label: "Horarios", name: schedule, widget: string, required: false }
+      - { label: "Nota importante", name: note, widget: string, required: false }
+      - { label: "Texto del botón", name: ctaLabel, widget: string, default: "Quiero saber más" }
+      - { label: "Interés preseleccionado en el formulario", name: interest, widget: string, default: "Otro", hint: "Debe coincidir con una opción de Configuración → Formulario." }
+      - { label: "Borrador (no publicar)", name: draft, widget: boolean, default: false, required: false }
+      - { label: "Descripción ampliada", name: body, widget: markdown }
+
+  # --------------------------------------------------------------------------
+  - name: events
+    label: "📅 Agenda"
+    label_singular: "Evento"
+    description: "Próximas experiencias, talleres y encuentros. Los eventos pasados salen solos de la agenda."
+    folder: src/content/events
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    sortable_fields: [date, title]
+    summary: "{{date}} · {{title}} ({{status}})"
+    fields:
+      - { label: "Actividad", name: title, widget: string }
+      - { label: "Fecha", name: date, widget: datetime, format: "YYYY-MM-DD", time_format: false, date_format: "DD/MM/YYYY" }
+      - { label: "Hora", name: time, widget: string, required: false, hint: "Ej.: 9:00 a. m. – 12:00 m." }
+      - { label: "Duración", name: duration, widget: string, required: false }
+      - { label: "Cupos", name: capacity, widget: string, required: false }
+      - { label: "Precio (opcional)", name: price, widget: string, required: false }
+      - { label: "Ubicación", name: location, widget: string, default: "Alma Canina, Tenjo" }
+      - { label: "Perros permitidos", name: dogsAllowed, widget: string, required: false, hint: "Ej.: Todos los tamaños, con vacunas al día." }
+      - label: "Estado"
+        name: status
+        widget: select
+        default: proximamente
+        options:
+          - { label: "Próximamente", value: proximamente }
+          - { label: "Inscripciones abiertas", value: abiertas }
+          - { label: "Cupos agotados", value: agotado }
+          - { label: "Finalizado", value: finalizado }
+      - { label: "Resumen", name: summary, widget: text }
+      - { label: "Fotografía", name: image, widget: image, required: false }
+      - { label: "Descripción de la foto", name: imageAlt, widget: string, required: false }
+      - { label: "Borrador (no publicar)", name: draft, widget: boolean, default: false, required: false }
+      - { label: "Detalles", name: body, widget: markdown, required: false }
+
+  # --------------------------------------------------------------------------
+  - name: articles
+    label: "📚 Aprende"
+    label_singular: "Artículo"
+    folder: src/content/articles
+    create: true
+    slug: "{{slug}}"
+    sortable_fields: [date, title]
+    summary: "{{title}} · {{date}}"
+    fields:
+      - { label: "Título", name: title, widget: string }
+      - { label: "Descripción corta (SEO)", name: description, widget: text }
+      - label: "Categoría"
+        name: category
+        widget: select
+        options:
+          - { label: "Bienestar animal", value: bienestar }
+          - { label: "Comportamiento", value: comportamiento }
+          - { label: "Primeros auxilios", value: primeros-auxilios }
+          - { label: "Convivencia", value: convivencia }
+          - { label: "Educación positiva", value: educacion-positiva }
+          - { label: "Cuidados", value: cuidados }
+          - { label: "Tenencia responsable", value: tenencia-responsable }
+          - { label: "Legislación animal", value: legislacion }
+          - { label: "Actividades con tu perro", value: actividades }
+      - { label: "Etiquetas", name: tags, widget: list, required: false, field: { label: "Etiqueta", name: tag, widget: string } }
+      - { label: "Fecha", name: date, widget: datetime, format: "YYYY-MM-DD", time_format: false, date_format: "DD/MM/YYYY" }
+      - { label: "Actualizado", name: updated, widget: datetime, format: "YYYY-MM-DD", time_format: false, date_format: "DD/MM/YYYY", required: false }
+      - { label: "Autor", name: author, widget: string, default: "Equipo Alma Canina" }
+      - { label: "Imagen", name: image, widget: image, required: false }
+      - { label: "Descripción de la imagen", name: imageAlt, widget: string, required: false }
+      - { label: "Destacado", name: featured, widget: boolean, default: false, required: false }
+      - { label: "Leyes relacionadas", name: relatedLaws, widget: relation, collection: laws, search_fields: [popularName, title], value_field: "{{slug}}", display_fields: [popularName], multiple: true, required: false }
+      - label: "Fuentes"
+        name: sources
+        widget: list
+        required: false
+        fields:
+          - { label: "Nombre", name: label, widget: string }
+          - { label: "Enlace", name: url, widget: string }
+      - { label: "Borrador (no publicar)", name: draft, widget: boolean, default: false, required: false }
+      - { label: "Contenido", name: body, widget: markdown }
+
+  # --------------------------------------------------------------------------
+  - name: laws
+    label: "⚖️ Legislación"
+    label_singular: "Ley"
+    description: "Leyes vigentes. Nunca inventes datos: si algo no está verificado escribe «Pendiente de verificación»."
+    folder: src/content/laws
+    create: true
+    slug: "{{fields.popularName}}"
+    identifier_field: popularName
+    sortable_fields: [order, popularName]
+    summary: "{{popularName}} · Ley {{lawNumber}} de {{year}}"
+    fields:
+      - { label: "Nombre popular", name: popularName, widget: string }
+      - { label: "Título oficial (resumido)", name: title, widget: string }
+      - { label: "Tipo", name: type, widget: hidden, default: "Ley" }
+      - { label: "Número oficial", name: lawNumber, widget: string }
+      - { label: "Año", name: year, widget: number, value_type: int }
+      - { label: "Estado", name: status, widget: string, default: "Vigente" }
+      - { label: "Fecha de sanción / expedición", name: sanctionDate, widget: string, hint: "Ej.: 18 de abril de 2025" }
+      - { label: "Publicación (Diario Oficial)", name: publication, widget: string, required: false }
+      - { label: "Tema", name: topic, widget: text }
+      - { label: "¿De qué trata? (lenguaje ciudadano)", name: summary, widget: text }
+      - { label: "¿Qué problema busca solucionar?", name: problem, widget: text }
+      - { label: "¿Qué cambia?", name: keyChanges, widget: list, field: { label: "Cambio", name: c, widget: text } }
+      - { label: "¿A quién protege o beneficia?", name: beneficiaries, widget: list, field: { label: "Beneficiario", name: b, widget: string } }
+      - { label: "¿Qué obligaciones crea?", name: obligations, widget: list, field: { label: "Obligación", name: o, widget: text } }
+      - { label: "¿Qué significa para los ciudadanos?", name: citizenMeaning, widget: text, required: false }
+      - { label: "¿Qué puedo hacer gracias a esta ley?", name: citizenTools, widget: list, required: false, field: { label: "Acción", name: t, widget: string } }
+      - label: "Ruta práctica"
+        name: routes
+        widget: list
+        required: false
+        fields:
+          - { label: "Si estás frente a esta situación…", name: situation, widget: string }
+          - { label: "Pasos", name: steps, widget: list, field: { label: "Paso", name: s, widget: string } }
+      - label: "Autoridades relacionadas"
+        name: authorities
+        widget: list
+        required: false
+        fields:
+          - { label: "Autoridad", name: name, widget: string }
+          - { label: "Rol", name: role, widget: string }
+      - label: "Preguntas frecuentes"
+        name: faq
+        widget: list
+        required: false
+        fields:
+          - { label: "Pregunta", name: q, widget: string }
+          - { label: "Respuesta", name: a, widget: text }
+      - label: "Documento oficial (botón «Consultar ley»)"
+        name: officialDocument
+        widget: object
+        required: false
+        fields:
+          - { label: "Nombre", name: label, widget: string }
+          - { label: "Enlace", name: url, widget: string }
+      - label: "Fuente pedagógica (botón «Conocer material pedagógico»)"
+        name: pedagogicalSource
+        widget: object
+        required: false
+        fields:
+          - { label: "Nombre", name: label, widget: string }
+          - { label: "Enlace", name: url, widget: string }
+      - label: "Fuentes"
+        name: sources
+        widget: list
+        fields:
+          - { label: "Nombre", name: label, widget: string }
+          - { label: "Enlace", name: url, widget: string }
+      - label: "Temas (filtros)"
+        name: tags
+        widget: select
+        multiple: true
+        options: &lawtags
+          - { label: "Animales de compañía", value: animales-de-compania }
+          - { label: "Maltrato animal", value: maltrato-animal }
+          - { label: "Educación", value: educacion }
+          - { label: "Fauna silvestre", value: fauna-silvestre }
+          - { label: "Servicios para animales", value: servicios-para-animales }
+          - { label: "Esterilización", value: esterilizacion }
+          - { label: "Bienestar", value: bienestar }
+          - { label: "Propiedad horizontal", value: propiedad-horizontal }
+          - { label: "Familia multiespecie", value: familia-multiespecie }
+          - { label: "Espectáculos", value: espectaculos }
+          - { label: "Proteccionistas", value: proteccionistas }
+      - { label: "¿Por qué importa a Alma Canina?", name: almaRelevance, widget: text, required: false }
+      - { label: "Destacada en inicio", name: featured, widget: boolean, default: false, required: false }
+      - { label: "Orden", name: order, widget: number, value_type: int, default: 10 }
+      - { label: "Última actualización", name: lastUpdated, widget: datetime, format: "YYYY-MM-DD", time_format: false, date_format: "DD/MM/YYYY" }
+      - { label: "Contenido adicional (tablas, explicaciones)", name: body, widget: markdown, required: false }
+
+  # --------------------------------------------------------------------------
+  - name: bills
+    label: "📜 Proyectos de ley"
+    label_singular: "Proyecto de ley"
+    description: "Los proyectos cambian: verifica el estado en el Congreso antes de publicar y actualiza la fecha."
+    folder: src/content/bills
+    create: true
+    slug: "{{fields.popularName}}"
+    identifier_field: popularName
+    sortable_fields: [order, popularName, lastUpdated]
+    summary: "{{popularName}} · {{stage}} · act. {{lastUpdated}}"
+    fields:
+      - { label: "Nombre popular", name: popularName, widget: string }
+      - { label: "Título", name: title, widget: string }
+      - { label: "Tipo", name: type, widget: hidden, default: "Proyecto de Ley" }
+      - { label: "Número actual", name: projectNumber, widget: string, default: "Pendiente de verificación" }
+      - { label: "Legislatura", name: legislature, widget: string, default: "Pendiente de verificación" }
+      - { label: "Estado", name: status, widget: string, default: "Pendiente de verificación" }
+      - { label: "¿Estado verificado en fuente oficial?", name: verified, widget: boolean, default: false }
+      - { label: "Cámara", name: chamber, widget: string, default: "Pendiente de verificación" }
+      - label: "Etapa legislativa (se resalta en la línea del trámite)"
+        name: stage
+        widget: select
+        options:
+          - { label: "Radicación", value: radicacion }
+          - { label: "Comisión", value: comision }
+          - { label: "Plenaria", value: plenaria }
+          - { label: "Otra Cámara", value: otra-camara }
+          - { label: "Conciliación", value: conciliacion }
+          - { label: "Sanción", value: sancion }
+      - { label: "Resumen", name: summary, widget: text }
+      - { label: "Objetivo", name: objective, widget: text }
+      - { label: "¿Qué propone?", name: keyPoints, widget: list, field: { label: "Punto", name: k, widget: string } }
+      - { label: "¿Por qué importa?", name: whyItMatters, widget: text, required: false }
+      - { label: "Autores", name: authors, widget: list, field: { label: "Autor", name: a, widget: string } }
+      - { label: "Último movimiento conocido", name: lastMovement, widget: text, required: false }
+      - { label: "Fecha del último movimiento", name: lastMovementDate, widget: string, required: false }
+      - { label: "Próximos pasos", name: nextSteps, widget: text, required: false }
+      - label: "Cronología"
+        name: timeline
+        widget: list
+        required: false
+        fields:
+          - { label: "Fecha", name: date, widget: string }
+          - { label: "Hecho", name: event, widget: string }
+      - label: "Documentos"
+        name: documents
+        widget: list
+        required: false
+        fields:
+          - { label: "Nombre", name: label, widget: string }
+          - { label: "Enlace", name: url, widget: string }
+      - label: "Fuentes oficiales"
+        name: sources
+        widget: list
+        fields:
+          - { label: "Nombre", name: label, widget: string }
+          - { label: "Enlace", name: url, widget: string }
+      - { label: "Temas (filtros)", name: tags, widget: select, multiple: true, options: *lawtags }
+      - { label: "Orden", name: order, widget: number, value_type: int, default: 10 }
+      - { label: "Última actualización", name: lastUpdated, widget: datetime, format: "YYYY-MM-DD", time_format: false, date_format: "DD/MM/YYYY" }
+      - { label: "Contenido adicional", name: body, widget: markdown, required: false }
+
+  # --------------------------------------------------------------------------
+  - name: community
+    label: "🐶 Comunidad"
+    files:
+      - name: community
+        label: "Página Comunidad"
+        file: src/data/community.json
+        format: json
+        fields:
+          - label: "Encabezado"
+            name: intro
+            widget: object
+            fields:
+              - { label: "Texto pequeño superior", name: eyebrow, widget: string }
+              - { label: "Título", name: title, widget: string }
+              - { label: "Texto", name: text, widget: text }
+          - label: "Agenda"
+            name: agenda
+            widget: object
+            fields:
+              - { label: "Título", name: title, widget: string }
+              - { label: "Texto cuando no hay eventos", name: emptyText, widget: text }
+          - label: "Galería de fotos"
+            name: gallery
+            widget: list
+            required: false
+            fields:
+              - { label: "Foto", name: image, widget: image }
+              - { label: "Descripción (accesibilidad)", name: alt, widget: string }
+              - { label: "Pie de foto", name: caption, widget: string, required: false }
+          - label: "Aliados"
+            name: allies
+            widget: list
+            required: false
+            fields:
+              - { label: "Nombre", name: name, widget: string }
+              - { label: "Logo", name: logo, widget: image, required: false }
+              - { label: "Sitio web", name: url, widget: string, required: false }
+              - { label: "Descripción", name: description, widget: string, required: false }
+          - { label: "Texto de invitación a aliados", name: alliesText, widget: text }
+
+  - name: team
+    label: "👥 Equipo"
+    label_singular: "Profesional"
+    folder: src/content/team
+    create: true
+    slug: "{{slug}}"
+    identifier_field: name
+    summary: "{{name}} · {{role}}"
+    fields:
+      - { label: "Nombre", name: name, widget: string }
+      - { label: "Cargo o especialidad", name: role, widget: string }
+      - { label: "Foto", name: photo, widget: image, required: false }
+      - { label: "Orden", name: order, widget: number, value_type: int, default: 10 }
+      - { label: "Borrador (no publicar)", name: draft, widget: boolean, default: false, required: false }
+      - { label: "Biografía", name: body, widget: markdown, required: false }
+
+  - name: testimonials
+    label: "💬 Testimonios"
+    label_singular: "Testimonio"
+    description: "Publica solo testimonios reales y con autorización de la familia."
+    folder: src/content/testimonials
+    create: true
+    slug: "{{slug}}"
+    identifier_field: name
+    fields:
+      - { label: "Nombre de la familia o persona", name: name, widget: string }
+      - { label: "Nombre del perro", name: dogName, widget: string, required: false }
+      - { label: "Testimonio", name: quote, widget: text }
+      - { label: "Foto", name: photo, widget: image, required: false }
+      - { label: "Borrador (no publicar)", name: draft, widget: boolean, default: false, required: false }
+
+  - name: faqs
+    label: "❓ Preguntas frecuentes"
+    label_singular: "Pregunta"
+    folder: src/content/faqs
+    create: true
+    slug: "{{slug}}"
+    identifier_field: question
+    summary: "{{order}} · {{question}}"
+    fields:
+      - { label: "Pregunta", name: question, widget: string }
+      - { label: "Respuesta", name: answer, widget: text }
+      - { label: "Orden", name: order, widget: number, value_type: int, default: 10 }
+      - { label: "Borrador (no publicar)", name: draft, widget: boolean, default: false, required: false }
+
+  # --------------------------------------------------------------------------
+  - name: settings
+    label: "⚙️ Configuración"
+    files:
+      - name: settings
+        label: "Datos generales, contacto y redes"
+        file: src/data/settings.json
+        format: json
+        fields:
+          - { label: "Nombre del sitio", name: siteName, widget: string }
+          - { label: "Logo definitivo (opcional)", name: logo, widget: image, required: false, hint: "Si lo dejas vacío se usa el logo provisional." }
+          - { label: "Claim", name: claim, widget: string }
+          - { label: "Concepto", name: concept, widget: string }
+          - { label: "Frase complementaria", name: promise, widget: string }
+          - { label: "Descripción para Google (SEO)", name: seoDescription, widget: text }
+          - { label: "Imagen para compartir en redes (1200×630)", name: ogImage, widget: image, required: false }
+          - label: "Contacto"
+            name: contact
+            widget: object
+            fields:
+              - { label: "Correo", name: email, widget: string, required: false }
+              - { label: "Teléfono", name: phone, widget: string, required: false }
+              - { label: "WhatsApp (con indicativo, ej. 573001234567)", name: whatsapp, widget: string, required: false, hint: "El botón flotante de WhatsApp solo aparece cuando llenas este campo." }
+              - { label: "Mensaje predeterminado de WhatsApp", name: whatsappMessage, widget: string, required: false }
+          - label: "Redes sociales (enlaces completos)"
+            name: social
+            widget: object
+            fields:
+              - { label: "Instagram", name: instagram, widget: string, required: false }
+              - { label: "Facebook", name: facebook, widget: string, required: false }
+              - { label: "TikTok", name: tiktok, widget: string, required: false }
+              - { label: "YouTube", name: youtube, widget: string, required: false }
+              - { label: "LinkedIn", name: linkedin, widget: string, required: false }
+          - label: "Ubicación"
+            name: location
+            widget: object
+            fields:
+              - { label: "Municipio", name: municipality, widget: string }
+              - { label: "Departamento", name: department, widget: string }
+              - { label: "País", name: country, widget: string }
+              - { label: "Dirección exacta (opcional)", name: address, widget: string, required: false }
+              - { label: "Instrucciones para llegar", name: directions, widget: text, required: false }
+              - { label: "Horarios", name: hours, widget: string, required: false }
+              - { label: "URL para insertar el mapa (Google Maps → Compartir → Insertar mapa → copiar solo el enlace src)", name: mapEmbedUrl, widget: string, required: false }
+              - { label: "Enlace para abrir en el mapa", name: mapLink, widget: string, required: false }
+          - label: "Datos legales (tratamiento de datos)"
+            name: legal
+            widget: object
+            fields:
+              - { label: "Responsable (nombre o razón social)", name: responsibleName, widget: string, required: false }
+              - { label: "NIT o cédula", name: responsibleId, widget: string, required: false }
+              - { label: "Correo para datos personales", name: privacyEmail, widget: string, required: false }
+              - { label: "Dirección para notificaciones", name: privacyAddress, widget: string, required: false }
+          - label: "Formulario de contacto"
+            name: form
+            widget: object
+            fields:
+              - { label: "Opciones de «¿Qué te interesa?»", name: interests, widget: list, field: { label: "Opción", name: o, widget: string } }
+              - { label: "Título de confirmación", name: successTitle, widget: string }
+              - { label: "Texto de confirmación", name: successText, widget: string }
+          - { label: "Mostrar indicaciones «Foto pendiente»", name: showPhotoHints, widget: boolean, hint: "Desactívalo cuando hayas subido las fotos." }
+          - { label: "Despedida del pie de página", name: footerFarewell, widget: string }
+
+      - name: guidance
+        label: "Orientación ciudadana (Legislación)"
+        file: src/data/guidance.json
+        format: json
+        fields:
+          - { label: "Título", name: title, widget: string }
+          - { label: "Introducción", name: intro, widget: text }
+          - { label: "Aviso", name: disclaimer, widget: text }
+          - label: "Situaciones"
+            name: situations
+            widget: list
+            fields:
+              - { label: "Identificador (sin espacios)", name: id, widget: string }
+              - { label: "Situación", name: title, widget: string }
+              - label: "Ícono"
+                name: icon
+                widget: select
+                options: [alert, shield, home, users, heart, bird, paw, doc, scale, leaf]
+              - { label: "Introducción", name: intro, widget: text }
+              - { label: "Pasos", name: steps, widget: list, field: { label: "Paso", name: s, widget: text } }
+              - { label: "Leyes relacionadas", name: laws, widget: relation, collection: laws, search_fields: [popularName], value_field: "{{slug}}", display_fields: [popularName], multiple: true, required: false }
+              - { label: "Proyectos relacionados", name: bills, widget: relation, collection: bills, search_fields: [popularName], value_field: "{{slug}}", display_fields: [popularName], multiple: true, required: false }
+
+  - name: pages
+    label: "📄 Páginas legales"
+    folder: src/content/pages
+    create: false
+    delete: false
+    fields:
+      - { label: "Título", name: title, widget: string }
+      - { label: "Descripción", name: description, widget: text }
+      - { label: "Última actualización", name: lastUpdated, widget: datetime, format: "YYYY-MM-DD", time_format: false, date_format: "DD/MM/YYYY" }
+      - { label: "Contenido", name: body, widget: markdown }

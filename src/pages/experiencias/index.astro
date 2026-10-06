@@ -1,0 +1,107 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import ExperienceCard from '../../components/ExperienceCard.astro';
+import EventCard from '../../components/EventCard.astro';
+import Icon from '../../components/Icon.astro';
+import { EXPERIENCE_CATEGORIES } from '../../lib/site';
+import { getExperiences, getEvents } from '../../lib/content';
+import { breadcrumbSchema } from '../../lib/schema';
+
+const experiences = await getExperiences();
+const { upcoming } = await getEvents();
+const crumbs = [{ name: 'Inicio', path: '/' }, { name: 'Experiencias', path: '/experiencias/' }];
+const cats = [...new Set(experiences.map((e) => e.data.category))];
+---
+<BaseLayout
+  title="Experiencias y servicios"
+  description="Educación y entrenamiento canino, experiencias tutor + perro, cursos y talleres, spa y grooming, bienestar y eventos de comunidad en Tenjo, Cundinamarca."
+  schema={[
+    breadcrumbSchema(Astro.site!, crumbs),
+    {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      itemListElement: experiences.map((e, i) => ({ '@type': 'ListItem', position: i + 1, url: new URL(`/experiencias/${e.id}/`, Astro.site).href, name: e.data.title })),
+    },
+  ]}
+>
+  <PageHero eyebrow="Experiencias" title="Aprender, jugar y compartir en la naturaleza" text="Cada experiencia está pensada para que tu perro esté bien y para que tú aprendas a comprenderlo mejor." crumbs={crumbs} />
+
+  <section class="bg-blanco pb-24 pt-6" aria-label="Catálogo de experiencias">
+    <div class="container-alma">
+      <div class="relative" data-exp-filter>
+        <div class="flex gap-2 overflow-x-auto pb-6 [scrollbar-width:none]" role="toolbar" aria-label="Filtrar experiencias por tipo">
+          <button type="button" class="filter-btn chip min-h-11 shrink-0 border-2 border-bosque-800 bg-bosque-800 px-5 font-semibold text-blanco" data-filter="todas" aria-pressed="true">Todas</button>
+          {cats.map((c) => (
+            <button type="button" class="filter-btn chip min-h-11 shrink-0 border-2 border-salvia-200 bg-blanco px-5 font-semibold text-bosque-900 hover:border-bosque-700" data-filter={c} aria-pressed="false">{EXPERIENCE_CATEGORIES[c].label}</button>
+          ))}
+        </div>
+        <span class="filter-ball pointer-events-none absolute bottom-1 left-0 h-4 w-4 rounded-full bg-terracota-500 transition-transform duration-700 ease-[var(--ease-bounce)]" aria-hidden="true"></span>
+      </div>
+      <p class="sr-only" aria-live="polite" data-filter-status></p>
+      <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+        {experiences.map((exp, i) => (
+          <div class="filterable" data-cat={exp.data.category}><ExperienceCard exp={exp} index={i} peek={i % 3 === 1} /></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-crema py-20" aria-labelledby="a-medida">
+    <div class="container-alma grid items-center gap-8 md:grid-cols-[1fr_auto]">
+      <div class="reveal">
+        <h2 id="a-medida" class="display-md text-bosque-900">¿Eres profesional del mundo animal o tienes un grupo?</h2>
+        <p class="lead mt-3 max-w-2xl">Diseñamos experiencias y capacitaciones para tutores, familias, adiestradores, groomers, paseadores y otros profesionales relacionados con el bienestar animal.</p>
+      </div>
+      <a href="/contacto/?interes=Alianzas#formulario" class="btn btn-primary reveal">Construyamos juntos <Icon name="arrow" class="h-5 w-5" /></a>
+    </div>
+  </section>
+
+  {upcoming.length > 0 && (
+    <section class="bg-blanco py-20" aria-labelledby="proximas">
+      <div class="container-alma">
+        <h2 id="proximas" class="display-md reveal text-bosque-900">Próximas experiencias</h2>
+        <div class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">{upcoming.slice(0, 3).map((ev, i) => <EventCard ev={ev} index={i} />)}</div>
+      </div>
+    </section>
+  )}
+</BaseLayout>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-exp-filter]');
+  const ball = root?.querySelector<HTMLElement>('.filter-ball');
+  const buttons = Array.from(root?.querySelectorAll<HTMLButtonElement>('.filter-btn') ?? []);
+  const items = Array.from(document.querySelectorAll<HTMLElement>('.filterable[data-cat]'));
+  const status = document.querySelector<HTMLElement>('[data-filter-status]');
+  const moveBall = (btn: HTMLElement) => {
+    if (!ball || !root) return;
+    const x = btn.offsetLeft - (btn.parentElement?.scrollLeft ?? 0) + btn.offsetWidth / 2 - 8;
+    ball.style.transform = `translateX(${x}px)`;
+  };
+  buttons.forEach((btn) =>
+    btn.addEventListener('click', () => {
+      const f = btn.dataset.filter!;
+      buttons.forEach((b) => {
+        const on = b === btn;
+        b.setAttribute('aria-pressed', String(on));
+        b.classList.toggle('bg-bosque-800', on);
+        b.classList.toggle('text-blanco', on);
+        b.classList.toggle('border-bosque-800', on);
+        b.classList.toggle('bg-blanco', !on);
+        b.classList.toggle('text-bosque-900', !on);
+      });
+      moveBall(btn);
+      let shown = 0;
+      items.forEach((el) => {
+        const match = f === 'todas' || el.dataset.cat === f;
+        if (match) shown++;
+        if (match) { el.hidden = false; requestAnimationFrame(() => el.classList.remove('is-hiding')); }
+        else { el.classList.add('is-hiding'); setTimeout(() => { if (el.classList.contains('is-hiding')) el.hidden = true; }, 300); }
+        el.querySelectorAll('.reveal').forEach((r) => r.classList.add('is-visible'));
+      });
+      if (status) status.textContent = `${shown} experiencia${shown === 1 ? '' : 's'}`;
+    }),
+  );
+  if (buttons[0]) requestAnimationFrame(() => moveBall(buttons[0]));
+  window.addEventListener('resize', () => { const a = buttons.find((b) => b.getAttribute('aria-pressed') === 'true'); if (a) moveBall(a); });
+</script>

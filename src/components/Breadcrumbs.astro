@@ -1,0 +1,17 @@
+---
+interface Props { items: { name: string; path: string }[]; dark?: boolean }
+const { items, dark = false } = Astro.props;
+---
+<nav aria-label="Ruta de navegación" class:list={['text-sm', dark ? 'text-salvia-200' : 'text-tinta-suave']}>
+  <ol class="flex flex-wrap items-center gap-1.5">
+    {items.map((it, i) => (
+      <li class="inline-flex items-center gap-1.5">
+        {i < items.length - 1 ? (
+          <><a href={it.path} class="underline-offset-4 hover:underline">{it.name}</a><span aria-hidden="true">/</span></>
+        ) : (
+          <span aria-current="page" class="font-semibold">{it.name}</span>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>

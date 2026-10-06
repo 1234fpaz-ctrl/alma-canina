@@ -1,0 +1,394 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/fraunces/soft.css';
+@import '@fontsource-variable/figtree';
+
+/* ==========================================================================
+   ALMA CANINA — Sistema visual
+   Naturaleza + perros + familia + educación + movimiento + bienestar
+   ========================================================================== */
+
+@theme {
+  /* Verde bosque */
+  --color-bosque-950: #12231a;
+  --color-bosque-900: #1a3124;
+  --color-bosque-800: #234030;
+  --color-bosque-700: #2e5440;
+  --color-bosque-600: #3d6a52;
+  /* Verde salvia */
+  --color-salvia-50: #f1f5ee;
+  --color-salvia-100: #e5ecdf;
+  --color-salvia-200: #d0dcc6;
+  --color-salvia-300: #b4c8a6;
+  --color-salvia-400: #9ab28b;
+  --color-salvia-600: #677f59;
+  /* Crema, arena y blanco cálido */
+  --color-blanco: #fcfaf5;
+  --color-crema: #f6efe2;
+  --color-arena-100: #efe4d0;
+  --color-arena-200: #e6d6ba;
+  --color-arena-300: #d6bf98;
+  /* Terracota suave */
+  --color-terracota-300: #e2a183;
+  --color-terracota-500: #c9714f;
+  --color-terracota-700: #9e4a2b;
+  /* Acento azul cielo */
+  --color-cielo-200: #cfe2ee;
+  --color-cielo-400: #93bdd8;
+  --color-cielo-700: #34647f;
+  /* Tinta */
+  --color-tinta: #1d2a21;
+  --color-tinta-suave: #4a5a4f;
+
+  --font-display: 'Fraunces Variable', 'Iowan Old Style', Georgia, serif;
+  --font-sans: 'Figtree Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --radius-organic: 2.25rem;
+  --ease-alma: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --animate-wag: wag 0.32s ease-in-out infinite alternate;
+  --animate-float: float 6s ease-in-out infinite;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 6rem;
+    overflow-x: clip;
+  }
+  body {
+    @apply bg-blanco text-tinta font-sans antialiased;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+  /* Textura sutil de papel */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-variation-settings: 'SOFT' 100;
+    letter-spacing: -0.015em;
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; }
+  ::selection { background: var(--color-salvia-300); color: var(--color-bosque-950); }
+
+  :focus-visible {
+    outline: 3px solid var(--color-terracota-500);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  a { text-underline-offset: 0.2em; }
+  img { max-width: 100%; height: auto; }
+}
+
+@layer components {
+  .container-alma {
+    width: 100%;
+    max-width: 78rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 768px) { .container-alma { padding-inline: 2rem; } }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-terracota-700;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 1.75rem;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+  }
+  .eyebrow-light { @apply text-arena-200; }
+
+  .display-xl { font-size: clamp(2.9rem, 9vw, 6.6rem); font-weight: 600; }
+  .display-lg { font-size: clamp(2.2rem, 5.5vw, 4.2rem); font-weight: 600; }
+  .display-md { font-size: clamp(1.75rem, 3.6vw, 2.75rem); font-weight: 600; }
+  .lead { font-size: clamp(1.1rem, 1.6vw, 1.3rem); line-height: 1.6; @apply text-tinta-suave; }
+
+  /* Botones */
+  .btn {
+    @apply relative inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 py-3 text-base font-semibold no-underline;
+    transition: transform 0.35s var(--ease-alma), background-color 0.25s, color 0.25s, box-shadow 0.35s var(--ease-alma);
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn:active { transform: translateY(0) scale(0.98); }
+  .btn-primary { @apply bg-bosque-800 text-blanco; box-shadow: 0 10px 24px -12px rgb(26 49 36 / 0.7); }
+  .btn-primary:hover { @apply bg-bosque-700; box-shadow: 0 16px 30px -14px rgb(26 49 36 / 0.8); }
+  .btn-terracota { @apply bg-terracota-700 text-blanco; }
+  .btn-terracota:hover { @apply bg-terracota-500; }
+  .btn-light { @apply bg-blanco text-bosque-900; }
+  .btn-light:hover { @apply bg-crema; }
+  .btn-ghost { @apply border-2 border-current bg-transparent; }
+  .btn-ghost:hover { background: rgb(255 255 255 / 0.08); }
+
+  /* Botón con cola que se mueve */
+  .btn-tail .tail {
+    transform-origin: 2px 14px;
+    transition: transform 0.3s;
+  }
+  .btn-tail:hover .tail, .btn-tail:focus-visible .tail { animation: var(--animate-wag); }
+
+  /* Tarjetas */
+  .card {
+    @apply relative overflow-hidden rounded-[1.75rem] bg-blanco;
+    box-shadow: 0 1px 0 rgb(29 42 33 / 0.06), 0 12px 32px -20px rgb(29 42 33 / 0.35);
+    transition: transform 0.5s var(--ease-alma), box-shadow 0.5s var(--ease-alma);
+  }
+  .card-lift:hover, .card-lift:focus-within {
+    transform: translateY(-6px);
+    box-shadow: 0 1px 0 rgb(29 42 33 / 0.06), 0 28px 50px -24px rgb(29 42 33 / 0.45);
+  }
+  .card-zoom img, .card-zoom .ph-art { transition: transform 1.2s var(--ease-alma); }
+  .card-zoom:hover img, .card-zoom:hover .ph-art { transform: scale(1.05); }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium;
+  }
+
+  .pillar { transition: border-radius 0.8s var(--ease-alma), transform 0.6s var(--ease-alma); }
+  .pillar-0 { border-radius: 3rem 3rem 3rem 0.75rem; }
+  .pillar-1 { border-radius: 0.75rem 3rem 3rem 3rem; }
+  .pillar-2 { border-radius: 3rem 0.75rem 3rem 3rem; }
+  .group:hover .pillar { border-radius: 4rem; transform: translateY(-4px); }
+  .blob-1 { border-radius: 58% 42% 52% 48% / 46% 54% 46% 54%; }
+  .blob-2 { border-radius: 42% 58% 38% 62% / 55% 40% 60% 45%; }
+  .organic-top { border-radius: 3rem 3rem 0 0; }
+  @media (min-width: 768px) { .organic-top { border-radius: 5rem 5rem 0 0; } }
+
+  /* Contenido largo (artículos y leyes) */
+  .prose-alma { @apply text-tinta; max-width: 68ch; }
+  .prose-alma > * + * { margin-top: 1.1em; }
+  .prose-alma h2 { @apply mt-12 text-3xl text-bosque-900; }
+  .prose-alma h3 { @apply mt-8 text-2xl text-bosque-900; }
+  .prose-alma a { @apply font-medium text-bosque-700 underline decoration-salvia-400 decoration-2; }
+  .prose-alma a:hover { @apply decoration-terracota-500; }
+  .prose-alma ul { list-style: none; padding-left: 0; }
+  .prose-alma ul > li { position: relative; padding-left: 1.6em; }
+  .prose-alma ul > li + li { margin-top: 0.45em; }
+  .prose-alma ul > li::before {
+    content: '';
+    position: absolute;
+    left: 0.2em;
+    top: 0.62em;
+    width: 0.55em;
+    height: 0.55em;
+    border-radius: 50% 50% 50% 0;
+    background: var(--color-salvia-400);
+    transform: rotate(-45deg);
+  }
+  .prose-alma ol { list-style: decimal; padding-left: 1.4em; }
+  .prose-alma ol > li + li { margin-top: 0.45em; }
+  .prose-alma ol > li::marker { @apply font-semibold text-terracota-700; }
+  .prose-alma blockquote {
+    @apply rounded-2xl border-l-4 border-terracota-500 bg-crema px-5 py-4 text-tinta;
+  }
+  .prose-alma blockquote p { margin: 0; }
+  .prose-alma table { @apply w-full border-collapse text-left text-[0.95rem]; display: block; overflow-x: auto; }
+  .prose-alma th { @apply bg-salvia-100 px-4 py-3 font-semibold text-bosque-900; }
+  .prose-alma td { @apply border-t border-salvia-200 px-4 py-3 align-top; }
+  .prose-alma strong { @apply font-semibold text-bosque-900; }
+
+  /* Acordeones fluidos */
+  .accordion details { @apply rounded-2xl bg-blanco; transition: background-color 0.3s; }
+  .accordion details[open] { @apply bg-salvia-50; }
+  .accordion summary {
+    @apply flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 font-semibold text-bosque-900;
+  }
+  .accordion summary::-webkit-details-marker { display: none; }
+  .accordion summary .acc-icon { transition: transform 0.4s var(--ease-alma); flex-shrink: 0; }
+  .accordion details[open] summary .acc-icon { transform: rotate(45deg); }
+  .accordion .acc-body { @apply px-5 pb-5 text-tinta-suave; }
+  @supports (interpolate-size: allow-keywords) {
+    .accordion { interpolate-size: allow-keywords; }
+    .accordion details::details-content {
+      height: 0;
+      overflow: clip;
+      transition: height 0.45s var(--ease-alma), content-visibility 0.45s allow-discrete;
+    }
+    .accordion details[open]::details-content { height: auto; }
+  }
+
+  /* Formularios */
+  .field label { @apply mb-1.5 block text-sm font-semibold text-bosque-900; }
+  .field input, .field select, .field textarea {
+    @apply w-full rounded-2xl border-2 border-salvia-200 bg-blanco px-4 py-3 text-base text-tinta;
+    min-height: 3rem;
+    transition: border-color 0.25s, box-shadow 0.25s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none;
+    @apply border-bosque-600;
+    box-shadow: 0 0 0 4px rgb(154 178 139 / 0.35);
+  }
+  .field input:user-invalid, .field select:user-invalid, .field textarea:user-invalid { @apply border-terracota-500; }
+  .field .hint { @apply mt-1 text-sm text-tinta-suave; }
+}
+
+/* ==========================================================================
+   Animaciones
+   ========================================================================== */
+
+@keyframes wag { from { transform: rotate(-14deg); } to { transform: rotate(18deg); } }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes walk-across {
+  from { transform: translateX(-140px); }
+  to { transform: translateX(calc(100vw + 40px)); }
+}
+@keyframes leg-a { from { transform: rotate(-16deg); } to { transform: rotate(16deg); } }
+@keyframes leg-b { from { transform: rotate(16deg); } to { transform: rotate(-16deg); } }
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.5px); } }
+@keyframes ball-bounce {
+  0% { transform: translate(-60px, -120px) rotate(0); }
+  35% { transform: translate(0, 0) rotate(160deg); }
+  55% { transform: translate(28px, -46px) rotate(260deg); }
+  75% { transform: translate(52px, 0) rotate(330deg); }
+  87% { transform: translate(64px, -12px) rotate(360deg); }
+  100% { transform: translate(72px, 0) rotate(380deg); }
+}
+@keyframes paw-in {
+  from { opacity: 0; transform: scale(0.4) rotate(var(--r, 0deg)); }
+  to { opacity: 1; transform: scale(1) rotate(var(--r, 0deg)); }
+}
+@keyframes jump {
+  0%, 100% { transform: translateY(0) scaleY(1); }
+  20% { transform: translateY(0) scaleY(0.92); }
+  50% { transform: translateY(-34px) scaleY(1.04); }
+  80% { transform: translateY(0) scaleY(0.96); }
+}
+@keyframes pop-in { from { opacity: 0; transform: scale(0.85) translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes ear-flick { 0%, 85%, 100% { transform: rotate(0); } 90% { transform: rotate(-12deg); } 95% { transform: rotate(6deg); } }
+
+/* Reveal on scroll (solo con JS activo) */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.9s var(--ease-alma), transform 0.9s var(--ease-alma);
+  transition-delay: var(--d, 0ms);
+}
+.js .reveal.is-visible { opacity: 1; transform: none; }
+
+/* Huellas que aparecen en la historia */
+.paw-step { opacity: 0; }
+.js .paw-trail.is-visible .paw-step { animation: paw-in 0.5s var(--ease-bounce) forwards; animation-delay: calc(var(--i) * 180ms); }
+.no-js .paw-step { opacity: 1; }
+
+/* Perro caminante del borde inferior */
+.dog-walker {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 40;
+  pointer-events: none;
+  color: var(--color-bosque-800);
+  opacity: 0;
+}
+.dog-walker.is-walking { opacity: 1; animation: walk-across 16s linear forwards; }
+.dog-walker.is-walking .leg-a { animation: leg-a 0.36s ease-in-out infinite alternate; }
+.dog-walker.is-walking .leg-b { animation: leg-b 0.36s ease-in-out infinite alternate; }
+.dog-walker.is-walking .dog-body { animation: bob 0.36s ease-in-out infinite; }
+.dog-walker.is-walking .tail { animation: wag 0.4s ease-in-out infinite alternate; }
+
+.dog-svg .leg-a, .dog-svg .leg-b { transform-box: fill-box; transform-origin: 50% 0%; }
+.dog-svg .tail { transform-box: fill-box; transform-origin: 100% 100%; }
+.dog-svg .ear { transform-box: fill-box; transform-origin: 50% 0%; animation: ear-flick 5s ease-in-out infinite; }
+
+/* Perro que se asoma detrás de una tarjeta */
+.peek-host { position: relative; }
+.peek-dog {
+  position: absolute;
+  top: 0;
+  right: 2.25rem;
+  width: 4.5rem;
+  transform: translateY(30%);
+  transition: transform 0.55s var(--ease-bounce);
+  z-index: 0;
+  pointer-events: none;
+}
+.peek-host:hover .peek-dog, .peek-host:focus-within .peek-dog { transform: translateY(-62%); }
+.peek-host > .card { z-index: 1; }
+
+/* Pelota que rebota al entrar a Experiencias */
+.ball { display: inline-block; }
+.js .ball-zone.is-visible .ball { animation: ball-bounce 1.4s var(--ease-alma) both; }
+
+/* Orejitas detrás de un título */
+.ears-title { position: relative; display: inline-block; isolation: isolate; }
+.ears-title .ears {
+  position: absolute;
+  top: -0.55em;
+  left: 50%;
+  width: 2.2em;
+  translate: -50% 0;
+  z-index: -1;
+  color: var(--color-arena-300);
+  transition: transform 0.5s var(--ease-bounce);
+}
+.ears-title:hover .ears { transform: translateY(-6px); }
+
+/* Huella → documento (Legislación) */
+.paw-doc { position: relative; width: 4rem; height: 4rem; }
+.paw-doc > * { position: absolute; inset: 0; transition: opacity 0.7s var(--ease-alma), transform 0.9s var(--ease-alma); }
+.paw-doc .doc { opacity: 0; transform: scale(0.6) rotate(-14deg); }
+.js .paw-doc.is-visible .paw { opacity: 0; transform: scale(0.5) rotate(20deg); transition-delay: 0.35s; }
+.js .paw-doc.is-visible .doc { opacity: 1; transform: none; transition-delay: 0.55s; }
+.no-js .paw-doc .paw { opacity: 0; }
+.no-js .paw-doc .doc { opacity: 1; transform: none; }
+
+/* Éxito del formulario */
+.success-dog { animation: jump 0.9s var(--ease-alma) 3; }
+.pop-in { animation: pop-in 0.6s var(--ease-alma) both; }
+
+/* Filtros animados */
+.filterable { transition: opacity 0.35s var(--ease-alma), transform 0.35s var(--ease-alma); }
+.filterable.is-hiding { opacity: 0; transform: scale(0.96); }
+
+/* Menú móvil */
+.mobile-menu { visibility: hidden; opacity: 0; transition: opacity 0.35s var(--ease-alma), visibility 0.35s; }
+.mobile-menu[data-open='true'] { visibility: visible; opacity: 1; }
+.mobile-menu .mm-item { opacity: 0; transform: translateY(16px); transition: opacity 0.5s var(--ease-alma), transform 0.5s var(--ease-alma); transition-delay: calc(var(--i) * 45ms + 80ms); }
+.mobile-menu[data-open='true'] .mm-item { opacity: 1; transform: none; }
+
+/* Header al hacer scroll */
+.site-header { transition: background-color 0.35s, box-shadow 0.35s, color 0.35s, transform 0.4s var(--ease-alma); }
+.site-header[data-scrolled='true'] { background: rgb(252 250 245 / 0.92); backdrop-filter: blur(12px); box-shadow: 0 1px 0 rgb(29 42 33 / 0.08); color: var(--color-bosque-900); }
+.site-header[data-hidden='true'] { transform: translateY(-110%); }
+
+/* Parallax muy sutil */
+.parallax { will-change: transform; }
+
+/* Línea de trámite legislativo */
+.stage-line li[data-state='done'] .stage-dot { background: var(--color-bosque-700); border-color: var(--color-bosque-700); color: var(--color-blanco); }
+.stage-line li[data-state='current'] .stage-dot { background: var(--color-terracota-500); border-color: var(--color-terracota-500); color: var(--color-blanco); box-shadow: 0 0 0 6px rgb(201 113 79 / 0.22); }
+.stage-line li[data-state='current'] .stage-label { color: var(--color-terracota-700); font-weight: 700; }
+
+/* Accesibilidad: respeta prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .js .reveal { opacity: 1; transform: none; }
+  .paw-step { opacity: 1; }
+  .dog-walker { display: none !important; }
+  .parallax { transform: none !important; }
+}
+
+.sr-only-focusable:not(:focus) {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}

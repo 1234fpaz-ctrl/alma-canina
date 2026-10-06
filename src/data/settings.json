@@ -1,0 +1,54 @@
+{
+  "siteName": "Alma Canina",
+  "logo": "",
+  "claim": "Educamos con alma",
+  "concept": "Educamos · Conectamos · Transformamos",
+  "promise": "Perros más felices, humanos más conscientes y familias más conectadas.",
+  "seoDescription": "Alma Canina es un club de educación, bienestar, experiencias y cultura animal en Tenjo, Cundinamarca. Educación canina, experiencias tutor + perro, talleres y un centro de legislación animal en Colombia.",
+  "ogImage": "/og-image.png",
+  "contact": {
+    "email": "",
+    "phone": "",
+    "whatsapp": "573016108885",
+    "whatsappMessage": "Hola, Alma Canina. Quiero conocer más sobre sus experiencias 🐾"
+  },
+  "social": {
+    "instagram": "https://www.instagram.com/alma_caninaoficial",
+    "facebook": "",
+    "tiktok": "",
+    "youtube": "",
+    "linkedin": ""
+  },
+  "location": {
+    "municipality": "Tenjo",
+    "department": "Cundinamarca",
+    "country": "Colombia",
+    "address": "",
+    "directions": "",
+    "hours": "",
+    "mapEmbedUrl": "",
+    "mapLink": ""
+  },
+  "legal": {
+    "responsibleName": "",
+    "responsibleId": "",
+    "privacyEmail": "",
+    "privacyAddress": ""
+  },
+  "form": {
+    "interests": [
+      "Educación canina",
+      "Experiencias tutor + perro",
+      "Talleres",
+      "Primeros auxilios",
+      "Grooming",
+      "Eventos",
+      "Alianzas",
+      "Otro"
+    ],
+    "successTitle": "¡Mensaje enviado!",
+    "successText": "Un miembro de nuestra manada se pondrá en contacto contigo."
+  },
+  "showPhotoHints": true,
+  "footerFarewell": "Nos vemos en la próxima aventura"
+}

@@ -1,0 +1,91 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import Icon from '../../components/Icon.astro';
+import { ARTICLE_CATEGORIES } from '../../lib/site';
+import { getArticles } from '../../lib/content';
+import { breadcrumbSchema } from '../../lib/schema';
+
+const articles = await getArticles();
+const featured = articles.filter((a) => a.data.featured).slice(0, 1);
+const crumbs = [{ name: 'Inicio', path: '/' }, { name: 'Aprende', path: '/aprende/' }];
+const usedCats = new Set<string>(articles.map((a) => a.data.category));
+---
+<BaseLayout
+  title="Aprende — Centro de conocimiento"
+  description="Artículos sobre bienestar animal, comportamiento, primeros auxilios, convivencia, educación positiva, tenencia responsable y legislación animal en Colombia."
+  schema={[breadcrumbSchema(Astro.site!, crumbs)]}
+>
+  <PageHero eyebrow="Aprende" title="Comprender también es cuidar" text="Un pequeño centro de conocimiento para tutores, familias y amantes de los animales. Lecturas cortas, claras y con fuentes." crumbs={crumbs} tone="crema" />
+
+  <section class="bg-blanco pb-24 pt-6" aria-label="Artículos">
+    <div class="container-alma">
+      <form class="reveal flex flex-col gap-4 rounded-[2rem] bg-salvia-50 p-4 md:p-5" role="search" data-article-filter onsubmit="return false">
+        <label class="relative block">
+          <span class="sr-only">Buscar artículos</span>
+          <Icon name="search" class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-tinta-suave" />
+          <input type="search" name="q" placeholder="Buscar: esterilización, guarderías, maltrato…" class="h-14 w-full rounded-full border-2 border-transparent bg-blanco pl-12 pr-5 text-base focus:border-bosque-600 focus:outline-none" autocomplete="off" />
+        </label>
+        <div class="flex gap-2 overflow-x-auto [scrollbar-width:none]" role="toolbar" aria-label="Filtrar por categoría">
+          <button type="button" class="cat-btn chip min-h-10 shrink-0 bg-bosque-800 px-4 font-semibold text-blanco" data-cat="todas" aria-pressed="true">Todas</button>
+          {Object.entries(ARTICLE_CATEGORIES).map(([k, v]) => (
+            <button type="button" class:list={['cat-btn chip min-h-10 shrink-0 bg-blanco px-4 font-semibold text-bosque-900', !usedCats.has(k) && 'opacity-60']} data-cat={k} aria-pressed="false">{v}</button>
+          ))}
+        </div>
+      </form>
+      <p class="sr-only" aria-live="polite" data-results-status></p>
+
+      {featured.length > 0 && (
+        <div class="mt-12" data-featured>
+          <h2 class="eyebrow">Destacado</h2>
+          <div class="mt-4">{featured.map((a) => <ArticleCard article={a} large />)}</div>
+        </div>
+      )}
+
+      <h2 class="mt-14 font-display text-3xl text-bosque-900">Todos los artículos</h2>
+      <div class="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-article-grid>
+        {articles.map((a, i) => <ArticleCard article={a} index={i} />)}
+      </div>
+      <div class="mt-10 hidden rounded-[2rem] bg-crema p-8 text-center" data-empty>
+        <p class="text-lg text-tinta-suave">Aún no hay artículos en esta categoría. ¡Muy pronto publicaremos nuevos contenidos!</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-article-filter]');
+  const input = form?.querySelector<HTMLInputElement>('input[name=q]');
+  const btns = Array.from(form?.querySelectorAll<HTMLButtonElement>('.cat-btn') ?? []);
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-article-grid] .filterable'));
+  const featured = document.querySelector<HTMLElement>('[data-featured]');
+  const empty = document.querySelector<HTMLElement>('[data-empty]');
+  const status = document.querySelector<HTMLElement>('[data-results-status]');
+  let cat = 'todas';
+  const norm = (s: string) => s.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '');
+  const params = new URLSearchParams(location.search);
+  if (params.get('q') && input) input.value = params.get('q')!;
+  if (params.get('categoria')) cat = params.get('categoria')!;
+  const apply = () => {
+    const q = norm(input?.value.trim() ?? '');
+    let n = 0;
+    cards.forEach((c) => {
+      const ok = (cat === 'todas' || c.dataset.cat === cat) && (!q || norm(c.dataset.search ?? '').includes(q));
+      c.hidden = !ok;
+      if (ok) n++;
+    });
+    if (featured) featured.hidden = !!q || cat !== 'todas';
+    empty?.classList.toggle('hidden', n > 0);
+    if (status) status.textContent = `${n} artículo${n === 1 ? '' : 's'} encontrado${n === 1 ? '' : 's'}`;
+    btns.forEach((b) => {
+      const on = b.dataset.cat === cat;
+      b.setAttribute('aria-pressed', String(on));
+      b.classList.toggle('bg-bosque-800', on); b.classList.toggle('text-blanco', on);
+      b.classList.toggle('bg-blanco', !on); b.classList.toggle('text-bosque-900', !on);
+    });
+  };
+  btns.forEach((b) => b.addEventListener('click', () => { cat = b.dataset.cat!; apply(); }));
+  input?.addEventListener('input', apply);
+  apply();
+</script>

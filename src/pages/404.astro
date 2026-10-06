@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DogSide from '../components/DogSide.astro';
+---
+<BaseLayout title="Página no encontrada" noindex>
+  <section class="flex min-h-[85vh] flex-col items-center justify-center bg-salvia-100 px-5 pt-28 text-center">
+    <DogSide class="h-20 w-auto text-bosque-800" />
+    <p class="mt-6 font-display text-8xl font-semibold text-terracota-500/60">404</p>
+    <h1 class="display-md mt-2 text-bosque-900">Este sendero no lleva a ningún lado</h1>
+    <p class="lead mt-3 max-w-md">Parece que la página se fue a perseguir una pelota. Volvamos al camino.</p>
+    <div class="mt-8 flex flex-wrap justify-center gap-3">
+      <a href="/" class="btn btn-primary">Ir al inicio</a>
+      <a href="/experiencias/" class="btn btn-ghost text-bosque-900">Ver experiencias</a>
+    </div>
+  </section>
+</BaseLayout>

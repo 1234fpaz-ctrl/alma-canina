@@ -1,0 +1,25 @@
+---
+/** Cara de perro frontal (se asoma detrás de tarjetas y celebra el formulario). */
+interface Props { class?: string; paws?: boolean }
+const { class: cls = '', paws = true } = Astro.props;
+---
+<svg class:list={['dog-svg', cls]} viewBox="0 0 96 80" aria-hidden="true">
+  <g fill="var(--color-arena-300)">
+    <ellipse class="ear" cx="22" cy="30" rx="11" ry="20" transform="rotate(22 22 30)" fill="var(--color-terracota-500)" />
+    <ellipse class="ear" cx="74" cy="30" rx="11" ry="20" transform="rotate(-22 74 30)" fill="var(--color-terracota-500)" />
+    <circle cx="48" cy="38" r="26" />
+    <ellipse cx="48" cy="50" rx="13.5" ry="10" fill="var(--color-crema)" />
+    <ellipse cx="48" cy="44" rx="5.5" ry="4" fill="var(--color-bosque-900)" />
+    <path d="M48 48 v4 M43 54 q5 4 10 0" stroke="var(--color-bosque-900)" stroke-width="2" fill="none" stroke-linecap="round" />
+    <circle cx="38" cy="34" r="3" fill="var(--color-bosque-900)" />
+    <circle cx="58" cy="34" r="3" fill="var(--color-bosque-900)" />
+    <circle cx="39" cy="33" r="1" fill="var(--color-blanco)" />
+    <circle cx="59" cy="33" r="1" fill="var(--color-blanco)" />
+    {paws && (
+      <g>
+        <ellipse cx="31" cy="72" rx="9" ry="7" />
+        <ellipse cx="65" cy="72" rx="9" ry="7" />
+      </g>
+    )}
+  </g>
+</svg>

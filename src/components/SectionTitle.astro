@@ -1,0 +1,17 @@
+---
+interface Props { eyebrow?: string; title: string; text?: string; center?: boolean; light?: boolean; ears?: boolean; class?: string; id?: string }
+const { eyebrow, title, text, center = false, light = false, ears = false, class: cls = '', id } = Astro.props;
+---
+<div class:list={['reveal', center && 'mx-auto text-center', cls]}>
+  {eyebrow && <p class:list={['eyebrow', light && 'eyebrow-light', center && 'justify-center']}>{eyebrow}</p>}
+  <h2 id={id} class:list={['display-md mt-3', light ? 'text-blanco' : 'text-bosque-900', center && 'mx-auto max-w-3xl']}>
+    {ears ? (
+      <span class="ears-title">
+        <svg class="ears" viewBox="0 0 60 30" aria-hidden="true"><path d="M8 30 C 2 18, 6 4, 18 2 C 22 12, 22 22, 18 30Z M52 30 C 58 18, 54 4, 42 2 C 38 12, 38 22, 42 30Z" fill="currentColor" /></svg>
+        {title}
+      </span>
+    ) : title}
+  </h2>
+  {text && <p class:list={['lead mt-4', light && '!text-salvia-200', center ? 'mx-auto max-w-2xl' : 'max-w-2xl']}>{text}</p>}
+  <slot />
+</div>

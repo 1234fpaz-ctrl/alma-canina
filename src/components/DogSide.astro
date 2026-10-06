@@ -1,0 +1,21 @@
+---
+/** Perro de perfil, construido por partes para animar patas, cola y orejas. */
+interface Props { class?: string; title?: string }
+const { class: cls = '', title } = Astro.props;
+---
+<svg class:list={['dog-svg', cls]} viewBox="0 0 124 84" fill="currentColor" role={title ? 'img' : undefined} aria-hidden={title ? undefined : 'true'} aria-label={title}>
+  <g class="dog-body">
+    <path class="tail" d="M27 40 C 17 34, 12 26, 11 15" fill="none" stroke="currentColor" stroke-width="6.5" stroke-linecap="round" />
+    <rect class="leg-b" x="29" y="46" width="8.5" height="30" rx="4.25" />
+    <rect class="leg-a" x="41" y="47" width="8.5" height="29" rx="4.25" />
+    <rect class="leg-a" x="70" y="47" width="8.5" height="29" rx="4.25" />
+    <rect class="leg-b" x="81" y="46" width="8.5" height="30" rx="4.25" />
+    <rect x="23" y="29" width="70" height="27" rx="13.5" />
+    <rect x="76" y="16" width="17" height="30" rx="8.5" transform="rotate(24 84 31)" />
+    <circle cx="96" cy="20" r="13.5" />
+    <ellipse cx="109" cy="24.5" rx="10" ry="7.5" />
+    <circle cx="117.5" cy="21.5" r="3.6" opacity=".55" />
+    <path class="ear" d="M90 9 C 83 11, 81 24, 85 32 C 90 28, 94 18, 90 9 Z" opacity=".72" />
+    <circle cx="100" cy="16.5" r="2" fill="var(--color-blanco)" />
+  </g>
+</svg>

@@ -1,0 +1,45 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Photo from './Photo.astro';
+import Icon from './Icon.astro';
+import { EVENT_STATUS, formatDate } from '../lib/site';
+interface Props { ev: CollectionEntry<'events'>; index?: number }
+const { ev, index = 0 } = Astro.props;
+const d = ev.data;
+const st = EVENT_STATUS[d.status];
+const canJoin = d.status === 'abiertas' || d.status === 'proximamente';
+const day = formatDate(d.date, { day: 'numeric' });
+const month = formatDate(d.date, { month: 'short' }).replace('.', '');
+---
+<article class="card card-lift reveal flex flex-col" style={`--d:${(index % 3) * 90}ms`}>
+  <div class="relative aspect-[16/10] overflow-hidden">
+    <Photo src={d.image} alt={d.imageAlt} scene="event" tone="dawn" sizes="(min-width: 1024px) 33vw, 100vw" />
+    <div class="absolute left-4 top-4 z-10 flex h-16 w-16 flex-col items-center justify-center rounded-2xl bg-blanco text-bosque-900 shadow">
+      <span class="font-display text-2xl font-semibold leading-none">{day}</span>
+      <span class="text-xs font-bold uppercase tracking-wider">{month}</span>
+    </div>
+    <span class:list={['chip absolute right-4 top-4 z-10 font-semibold', st.cls]}>{st.label}</span>
+  </div>
+  <div class="flex flex-1 flex-col p-6">
+    <h3 class="text-2xl text-bosque-900">{d.title}</h3>
+    <p class="mt-2 text-tinta-suave">{d.summary}</p>
+    <dl class="mt-4 grid grid-cols-1 gap-2 text-[0.95rem] text-tinta">
+      <div class="flex items-center gap-2"><dt><Icon name="calendar" class="h-5 w-5 text-salvia-600" label="Fecha" /></dt><dd>{formatDate(d.date)}{d.time && ` · ${d.time}`}</dd></div>
+      {d.duration && <div class="flex items-center gap-2"><dt><Icon name="clock" class="h-5 w-5 text-salvia-600" label="Duración" /></dt><dd>{d.duration}</dd></div>}
+      <div class="flex items-center gap-2"><dt><Icon name="pin" class="h-5 w-5 text-salvia-600" label="Ubicación" /></dt><dd>{d.location}</dd></div>
+      {d.capacity && <div class="flex items-center gap-2"><dt><Icon name="users" class="h-5 w-5 text-salvia-600" label="Cupos" /></dt><dd>{d.capacity}</dd></div>}
+      {d.dogsAllowed && <div class="flex items-center gap-2"><dt><Icon name="paw" class="h-5 w-5 text-salvia-600" label="Perros" /></dt><dd>{d.dogsAllowed}</dd></div>}
+      {d.price && <div class="flex items-center gap-2"><dt><Icon name="tag" class="h-5 w-5 text-salvia-600" label="Precio" /></dt><dd>{d.price}</dd></div>}
+    </dl>
+    <div class="mt-auto pt-6">
+      {canJoin ? (
+        <a href={`/contacto/?interes=Eventos&evento=${encodeURIComponent(d.title)}#formulario`} class="btn btn-primary btn-tail w-full">
+          Quiero participar
+          <svg class="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true"><path class="tail" d="M2 14 C 8 13, 14 8, 16 2" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" /><circle cx="19" cy="18" r="3" fill="currentColor" /></svg>
+        </a>
+      ) : (
+        <span class="btn w-full cursor-not-allowed bg-arena-100 text-tinta-suave" aria-disabled="true">{st.label}</span>
+      )}
+    </div>
+  </div>
+</article>

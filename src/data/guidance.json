@@ -1,0 +1,88 @@
+{
+  "title": "¿Necesitas orientación?",
+  "intro": "Elige la situación que más se parece a la tuya. Te mostramos información educativa y las normas relacionadas.",
+  "disclaimer": "Esta herramienta es pedagógica. No sustituye la asesoría jurídica profesional ni los servicios de emergencia. Ante un animal en riesgo inminente, llama a la Línea 123.",
+  "situations": [
+    {
+      "id": "maltrato",
+      "title": "Encontré un animal que podría estar siendo maltratado",
+      "icon": "alert",
+      "intro": "Desde la Ley Ángel (Ley 2455 de 2025), las autoridades tienen más herramientas para actuar rápidamente.",
+      "steps": [
+        "Si el animal está en peligro inminente, llama a la Línea 123 de la Policía Nacional.",
+        "No te pongas en riesgo ni te enfrentes a la persona.",
+        "Documenta, si es seguro: fecha, hora, lugar, fotos o videos y datos de testigos.",
+        "Acude a la inspección de policía de tu municipio. Si el animal murió o sufrió lesiones graves, presenta una denuncia penal ante la Fiscalía."
+      ],
+      "laws": ["ley-angel"],
+      "bills": []
+    },
+    {
+      "id": "mi-perro",
+      "title": "Quiero saber qué norma protege a mi perro",
+      "icon": "shield",
+      "intro": "En Colombia, los animales son reconocidos como seres sintientes (Ley 1774 de 2016). Estas normas recientes protegen a los perros en distintos ámbitos.",
+      "steps": [
+        "Contra el maltrato y el abandono: Ley Ángel.",
+        "Si contratas guardería, hotel, paseador, educación o grooming: Ley Kiara.",
+        "Para acceder a la esterilización: Esterilizar Salva.",
+        "Revisa también los proyectos de ley sobre familias multiespecie y propiedad horizontal."
+      ],
+      "laws": ["ley-angel", "ley-kiara", "esterilizar-salva"],
+      "bills": ["ley-simona", "ley-zoopolis"]
+    },
+    {
+      "id": "servicio",
+      "title": "Tengo un problema con un servicio de cuidado animal",
+      "icon": "home",
+      "intro": "La Ley Kiara (Ley 2480 de 2025) regula guarderías, hoteles, centros de educación o adiestramiento, peluquerías y spa, paseadores y transporte.",
+      "steps": [
+        "Revisa tu contrato escrito y guarda conversaciones, fotos y facturas.",
+        "Presenta tu inconformidad por escrito al prestador del servicio.",
+        "Si el prestador incumple la ley, informa a la alcaldía de tu municipio o distrito, que verifica el cumplimiento y puede sancionar.",
+        "Si hubo maltrato, consulta la ruta de la Ley Ángel."
+      ],
+      "laws": ["ley-kiara", "ley-angel"],
+      "bills": []
+    },
+    {
+      "id": "propiedad-horizontal",
+      "title": "Vivo en propiedad horizontal con mi animal",
+      "icon": "users",
+      "intro": "Hoy la convivencia en conjuntos y edificios se rige por la Ley 675 de 2001, por el reglamento de cada copropiedad y por el Código Nacional de Seguridad y Convivencia Ciudadana (Ley 1801 de 2016). El proyecto Zoópolis busca actualizar esas reglas.",
+      "steps": [
+        "Lee el reglamento de tu copropiedad.",
+        "Busca acuerdos con la administración y con tus vecinos.",
+        "Sigue el avance del proyecto de ley Zoópolis."
+      ],
+      "laws": [],
+      "bills": ["ley-zoopolis"]
+    },
+    {
+      "id": "esterilizacion",
+      "title": "Quiero conocer las reglas de esterilización",
+      "icon": "heart",
+      "intro": "La Ley 2374 de 2024 creó el Programa Nacional de Esterilización Quirúrgica de Gatos y Perros.",
+      "steps": [
+        "Es gratuita para las líneas especiales y para hogares en los grupos A, B y C del Sisbén, y de bajo costo para el grupo D.",
+        "Pregunta en la alcaldía de tu municipio por las jornadas.",
+        "La cirugía debe realizarla un médico veterinario con matrícula vigente."
+      ],
+      "laws": ["esterilizar-salva"],
+      "bills": []
+    },
+    {
+      "id": "fauna-silvestre",
+      "title": "Encontré fauna silvestre",
+      "icon": "bird",
+      "intro": "La fauna silvestre no es una mascota. Debe atenderla la autoridad ambiental.",
+      "steps": [
+        "No lo manipules, no lo alimentes y mantén a tu perro alejado.",
+        "Comunícate con la autoridad ambiental de tu región (en Tenjo, la Corporación Autónoma Regional de Cundinamarca, CAR) o con la Policía Nacional (Línea 123).",
+        "Anota el lugar exacto y, si es seguro, toma una foto a distancia."
+      ],
+      "laws": ["transporte-fauna-silvestre"],
+      "bills": ["ley-yoko"]
+    }
+  ]
+}

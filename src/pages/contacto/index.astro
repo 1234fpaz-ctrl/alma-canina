@@ -1,0 +1,144 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import Icon from '../../components/Icon.astro';
+import DogFace from '../../components/DogFace.astro';
+import { settings, whatsappLink, whatsappDisplay, socialLinks } from '../../lib/site';
+import { breadcrumbSchema } from '../../lib/schema';
+
+const crumbs = [{ name: 'Inicio', path: '/' }, { name: 'Contáctanos', path: '/contacto/' }];
+const wa = whatsappLink();
+const waNum = whatsappDisplay();
+const social = socialLinks();
+const { contact, location, form } = settings;
+---
+<BaseLayout
+  title="Contáctanos — Hablemos"
+  description="¿Quieres vivir una experiencia Alma Canina, participar en nuestros talleres o construir una alianza? Escríbenos. Tenjo, Cundinamarca."
+  schema={[breadcrumbSchema(Astro.site!, crumbs)]}
+>
+  <PageHero eyebrow="Contacto" title="Hablemos 🐾" text="¿Quieres vivir una experiencia Alma Canina, participar en nuestros talleres o construir una alianza con nosotros? Queremos conocerte." crumbs={crumbs} />
+
+  <section class="bg-blanco pb-24 pt-6" aria-label="Formulario de contacto">
+    <div class="container-alma grid gap-12 lg:grid-cols-12">
+      <div class="lg:col-span-8">
+        <div id="formulario" class="relative rounded-[2.5rem] bg-salvia-50 p-6 md:p-10">
+          <form name="contacto" method="POST" action="/contacto/gracias/" data-netlify="true" netlify-honeypot="direccion-web" class="grid gap-5 md:grid-cols-2" data-contact-form novalidate>
+            <input type="hidden" name="form-name" value="contacto" />
+            <p class="hidden"><label>No llenes este campo: <input name="direccion-web" tabindex="-1" autocomplete="off" /></label></p>
+            <input type="hidden" name="evento" value="" />
+            <div class="field"><label for="nombre">Nombre <span aria-hidden="true" class="text-terracota-700">*</span></label><input id="nombre" name="nombre" type="text" autocomplete="given-name" required /></div>
+            <div class="field"><label for="apellido">Apellido <span aria-hidden="true" class="text-terracota-700">*</span></label><input id="apellido" name="apellido" type="text" autocomplete="family-name" required /></div>
+            <div class="field"><label for="correo">Correo <span aria-hidden="true" class="text-terracota-700">*</span></label><input id="correo" name="correo" type="email" autocomplete="email" required /></div>
+            <div class="field"><label for="telefono">Teléfono</label><input id="telefono" name="telefono" type="tel" autocomplete="tel" inputmode="tel" /></div>
+            <div class="field"><label for="perro">Nombre del perro</label><input id="perro" name="nombre_perro" type="text" /></div>
+            <div class="field"><label for="edad">¿Qué edad tiene?</label><input id="edad" name="edad_perro" type="text" placeholder="Ej.: 2 años, 6 meses" /></div>
+            <div class="field md:col-span-2">
+              <label for="interes">¿Qué te interesa? <span aria-hidden="true" class="text-terracota-700">*</span></label>
+              <select id="interes" name="interes" required>
+                <option value="">Elige una opción</option>
+                {form.interests.map((o) => <option value={o}>{o}</option>)}
+              </select>
+            </div>
+            <div class="field md:col-span-2"><label for="mensaje">Mensaje <span aria-hidden="true" class="text-terracota-700">*</span></label><textarea id="mensaje" name="mensaje" rows="5" required></textarea></div>
+            <div class="md:col-span-2">
+              <label class="flex cursor-pointer items-start gap-3 text-[0.95rem] text-tinta">
+                <input type="checkbox" name="autorizacion_datos" value="Autorizo" required class="mt-1 h-5 w-5 shrink-0 accent-bosque-800" />
+                <span>Autorizo el tratamiento de mis datos personales según la <a href="/tratamiento-de-datos/" class="font-semibold text-bosque-700 underline">Política de tratamiento de datos</a> de Alma Canina. <span aria-hidden="true" class="text-terracota-700">*</span></span>
+              </label>
+            </div>
+            <p class="hidden rounded-2xl bg-terracota-300/40 p-4 text-tinta md:col-span-2" role="alert" data-form-error></p>
+            <div class="flex flex-col items-start gap-3 md:col-span-2 sm:flex-row sm:items-center sm:justify-between">
+              <p class="text-sm text-tinta-suave"><span aria-hidden="true" class="text-terracota-700">*</span> Campos obligatorios</p>
+              <button type="submit" class="btn btn-primary btn-tail w-full sm:w-auto" data-submit>
+                <span data-label>Enviar mensaje</span>
+                <svg class="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true"><path class="tail" d="M2 14 C 8 13, 14 8, 16 2" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" /><circle cx="19" cy="18" r="3" fill="currentColor" /></svg>
+              </button>
+            </div>
+          </form>
+
+          <div class="hidden flex-col items-center py-10 text-center" data-form-success tabindex="-1" role="status">
+            <DogFace class="success-dog h-28 w-auto" paws={false} />
+            <h2 class="pop-in mt-6 font-display text-4xl text-bosque-900">{form.successTitle}</h2>
+            <p class="pop-in mt-3 max-w-md text-lg text-tinta-suave" style="animation-delay:.15s">{form.successText}</p>
+            <a href="/" class="btn btn-primary pop-in mt-8" style="animation-delay:.3s">Volver al inicio</a>
+          </div>
+        </div>
+      </div>
+
+      <aside class="space-y-4 lg:col-span-4">
+        <div class="rounded-[2rem] bg-bosque-900 p-7 text-blanco">
+          <h2 class="text-2xl">Encuéntranos</h2>
+          <ul class="mt-5 space-y-4">
+            <li class="flex gap-3"><Icon name="pin" class="h-6 w-6 shrink-0 text-terracota-300" /><span>{location.address || `${location.municipality}, ${location.department}`}</span></li>
+            {location.hours && <li class="flex gap-3"><Icon name="clock" class="h-6 w-6 shrink-0 text-terracota-300" /><span>{location.hours}</span></li>}
+            {contact.email && <li class="flex gap-3"><Icon name="mail" class="h-6 w-6 shrink-0 text-terracota-300" /><a class="underline-offset-4 hover:underline" href={`mailto:${contact.email}`}>{contact.email}</a></li>}
+            {wa && <li class="flex gap-3"><Icon name="whatsapp" class="h-6 w-6 shrink-0 text-terracota-300" /><a class="underline-offset-4 hover:underline" href={wa} target="_blank" rel="noopener">WhatsApp {waNum}</a></li>}
+            {social.filter((s) => s.key === 'instagram').map((s) => <li class="flex gap-3"><Icon name="instagram" class="h-6 w-6 shrink-0 text-terracota-300" /><a class="underline-offset-4 hover:underline" href={s.url} target="_blank" rel="noopener">@{s.url.replace(/\/+$/, '').split('/').pop()}</a></li>)}
+            {contact.phone && <li class="flex gap-3"><Icon name="phone" class="h-6 w-6 shrink-0 text-terracota-300" /><a class="underline-offset-4 hover:underline" href={`tel:${contact.phone.replace(/\s/g, '')}`}>{contact.phone}</a></li>}
+          </ul>
+          {wa && <a href={wa} target="_blank" rel="noopener" class="btn btn-light mt-6 w-full"><Icon name="whatsapp" class="h-5 w-5" />Escríbenos por WhatsApp</a>}
+          {social.length > 0 && (
+            <ul class="mt-6 flex flex-wrap gap-2">
+              {social.map((s) => <li><a href={s.url} target="_blank" rel="noopener" class="inline-flex h-11 w-11 items-center justify-center rounded-full bg-blanco/10 hover:bg-blanco/20" aria-label={s.label}><Icon name={s.key} class="h-5 w-5" /></a></li>)}
+            </ul>
+          )}
+        </div>
+        <div class="rounded-[2rem] bg-crema p-7">
+          <h2 class="text-xl text-bosque-900">¿Una emergencia con un animal?</h2>
+          <p class="mt-2 text-tinta-suave">Este formulario no es un canal de emergencias. Si un animal está en riesgo inminente, llama a la Línea 123 de la Policía Nacional.</p>
+          <a href="/legislacion/#orientacion" class="mt-4 inline-flex items-center gap-2 font-semibold text-bosque-800">Ver orientación ciudadana <Icon name="arrow" class="h-5 w-5" /></a>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+  const success = document.querySelector<HTMLElement>('[data-form-success]');
+  const errorBox = form?.querySelector<HTMLElement>('[data-form-error]');
+  if (form) {
+    const params = new URLSearchParams(location.search);
+    const interes = params.get('interes');
+    const evento = params.get('evento');
+    const sel = form.querySelector<HTMLSelectElement>('select[name=interes]');
+    if (interes && sel && [...sel.options].some((o) => o.value === interes)) sel.value = interes;
+    if (evento) {
+      (form.querySelector('input[name=evento]') as HTMLInputElement).value = evento;
+      const msg = form.querySelector<HTMLTextAreaElement>('textarea[name=mensaje]');
+      if (msg && !msg.value) msg.value = `Hola, quiero participar en: ${evento}.`;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorBox?.classList.add('hidden');
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        const first = form.querySelector<HTMLElement>(':invalid');
+        first?.focus();
+        return;
+      }
+      const btn = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+      const label = btn.querySelector('[data-label]')!;
+      btn.disabled = true;
+      label.textContent = 'Enviando…';
+      try {
+        const body = new URLSearchParams(new FormData(form) as any).toString();
+        const res = await fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body });
+        if (!res.ok) throw new Error(String(res.status));
+        form.hidden = true;
+        success?.classList.remove('hidden');
+        success?.classList.add('flex');
+        success?.focus();
+      } catch {
+        if (errorBox) {
+          errorBox.textContent = 'No pudimos enviar tu mensaje. Revisa tu conexión e inténtalo de nuevo.';
+          errorBox.classList.remove('hidden');
+        }
+        btn.disabled = false;
+        label.textContent = 'Enviar mensaje';
+      }
+    });
+  }
+</script>

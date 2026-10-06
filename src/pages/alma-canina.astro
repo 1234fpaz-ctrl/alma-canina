@@ -1,0 +1,171 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import Photo from '../components/Photo.astro';
+import Icon from '../components/Icon.astro';
+import PawTrail from '../components/PawTrail.astro';
+import DogSide from '../components/DogSide.astro';
+import about from '../data/about.json';
+import home from '../data/home.json';
+import { settings } from '../lib/site';
+import { getTeam, getFaqs } from '../lib/content';
+import { breadcrumbSchema, faqSchema } from '../lib/schema';
+
+const team = await getTeam();
+const faqs = await getFaqs();
+const loc = settings.location;
+const crumbs = [{ name: 'Inicio', path: '/' }, { name: 'Alma Canina', path: '/alma-canina/' }];
+const icons = ['book', 'heart', 'leaf', 'users', 'spark', 'scale'];
+---
+<BaseLayout
+  title="Quiénes somos"
+  description="Alma Canina es un club canino de educación, bienestar y conexión familiar en Tenjo, Cundinamarca. Conoce nuestra historia, misión y visión."
+  schema={[breadcrumbSchema(Astro.site!, crumbs), ...(faqs.length ? [faqSchema(faqs.map((f) => ({ q: f.data.question, a: f.data.answer })))] : [])]}
+>
+  <PageHero eyebrow={about.intro.eyebrow} title={about.intro.title} text={about.intro.text} crumbs={crumbs} />
+
+  <!-- Quiénes somos -->
+  <section class="bg-blanco py-20 md:py-28" aria-labelledby="quienes">
+    <div class="container-alma grid items-start gap-12 lg:grid-cols-12">
+      <div class="lg:col-span-6">
+        <SectionTitle eyebrow="¿Quiénes somos?" title="Un club canino de educación, bienestar y conexión familiar" id="quienes" />
+        <div class="mt-8 space-y-5 text-lg text-tinta-suave">
+          {about.whoWeAre.map((p, i) => <p class="reveal" style={`--d:${i * 60}ms`}>{p}</p>)}
+        </div>
+      </div>
+      <div class="reveal lg:col-span-6 lg:pl-6">
+        <div class="blob-1 aspect-square overflow-hidden shadow-xl">
+          <Photo src={home.about.image} alt={home.about.imageAlt} hint="Equipo e instalaciones de Alma Canina" scene="family" tone="sage" hintPos="blob" />
+        </div>
+      </div>
+    </div>
+    <div class="container-alma mt-20">
+      <blockquote class="reveal relative overflow-hidden rounded-[2.5rem] bg-bosque-900 px-8 py-14 text-center md:px-20 md:py-20">
+        <DogSide class="absolute -bottom-1 right-10 h-14 w-auto text-bosque-800" />
+        <p class="mx-auto max-w-4xl font-display text-[1.9rem] leading-snug text-blanco md:text-5xl" style="font-variation-settings:'SOFT' 100">“{about.highlight}”</p>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- Historia -->
+  <section class="bg-crema py-20 md:py-28" aria-labelledby="historia">
+    <div class="container-alma">
+      <SectionTitle eyebrow="Nuestra historia" title="Así empezó el sendero" center id="historia" />
+      <ol class="relative mx-auto mt-14 max-w-3xl space-y-14">
+        {home.story.chapters.map((c, i) => (
+          <li class="reveal relative pl-14 md:pl-20">
+            <span class="absolute left-0 top-0 inline-flex h-11 w-11 items-center justify-center rounded-full bg-terracota-500 font-display text-xl font-semibold text-blanco md:h-14 md:w-14 md:text-2xl">{i + 1}</span>
+            <h3 class="text-2xl text-bosque-900 md:text-3xl">{c.title}</h3>
+            <p class="mt-3 text-lg text-tinta-suave">{c.text}</p>
+            {i < home.story.chapters.length - 1 && <PawTrail count={3} class="absolute -bottom-12 left-3 md:left-5" />}
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- Misión y visión -->
+  <section class="bg-blanco py-20 md:py-28" aria-label="Misión y visión">
+    <div class="container-alma grid gap-6 md:grid-cols-2 md:gap-8">
+      <article class="reveal relative overflow-hidden rounded-[2.5rem] bg-salvia-100 p-8 md:p-12">
+        <span class="inline-flex h-14 w-14 items-center justify-center rounded-full bg-blanco text-bosque-800"><Icon name="leaf" class="h-7 w-7" /></span>
+        <h2 class="mt-6 text-4xl text-bosque-900">Misión</h2>
+        <p class="mt-4 text-lg text-tinta">{about.mission.text}</p>
+        <p class="mt-6 font-display text-2xl leading-snug text-bosque-800" style="font-variation-settings:'SOFT' 100">{about.mission.complement}</p>
+      </article>
+      <article class="reveal relative overflow-hidden rounded-[2.5rem] bg-arena-100 p-8 md:p-12" style="--d:120ms">
+        <span class="inline-flex h-14 w-14 items-center justify-center rounded-full bg-blanco text-terracota-700"><Icon name="sun" class="h-7 w-7" /></span>
+        <h2 class="mt-6 text-4xl text-bosque-900">Visión</h2>
+        <p class="mt-4 text-lg text-tinta">{about.vision.text}</p>
+        <p class="mt-6 text-tinta-suave">{about.vision.complement}</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- Lo que nos mueve -->
+  <section class="bg-salvia-50 py-20 md:py-28" aria-labelledby="pilares">
+    <div class="container-alma">
+      <SectionTitle eyebrow="Lo que nos mueve" title="Naturaleza, educación, familia, bienestar y cultura animal" id="pilares" />
+      <ul class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {about.pillars.map((p, i) => (
+          <li class="reveal flex gap-4 rounded-3xl bg-blanco p-6" style={`--d:${(i % 3) * 80}ms`}>
+            <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-salvia-200 text-bosque-800"><Icon name={icons[i % icons.length]} class="h-6 w-6" /></span>
+            <span><span class="block text-lg font-semibold text-bosque-900">{p.title}</span><span class="text-tinta-suave">{p.text}</span></span>
+          </li>
+        ))}
+      </ul>
+      <div class="reveal mt-16 rounded-[2.5rem] bg-blanco p-8 md:p-12">
+        <h3 class="text-3xl text-bosque-900">{about.audience.title}</h3>
+        <p class="mt-3 max-w-3xl text-lg text-tinta-suave">{about.audience.text}</p>
+        <ul class="mt-6 flex flex-wrap gap-2">
+          {about.audience.groups.map((g) => <li class="chip bg-crema text-bosque-900">{g}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Equipo -->
+  <section class="bg-blanco py-20 md:py-28" aria-labelledby="equipo">
+    <div class="container-alma">
+      <SectionTitle eyebrow="Equipo" title={about.teamIntro.title} text={about.teamIntro.text} ears id="equipo" />
+      {team.length > 0 ? (
+        <ul class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {team.map((m, i) => (
+            <li class="reveal card card-lift" style={`--d:${(i % 4) * 80}ms`}>
+              <div class="aspect-[4/5] overflow-hidden"><Photo src={m.data.photo} alt={`Foto de ${m.data.name}`} hint={`Retrato de ${m.data.name}`} scene="family" tone="sage" /></div>
+              <div class="p-5"><p class="text-xl font-semibold text-bosque-900">{m.data.name}</p><p class="text-terracota-700">{m.data.role}</p></div>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="reveal mt-8 max-w-2xl rounded-3xl bg-crema p-6 text-tinta-suave">Muy pronto te presentaremos a los profesionales y aliados que acompañan cada experiencia.</p>
+      )}
+    </div>
+  </section>
+
+  <!-- Tenjo -->
+  <section id="tenjo" class="bg-bosque-900 py-20 text-blanco md:py-28" aria-labelledby="tenjo-title">
+    <div class="container-alma grid gap-12 lg:grid-cols-12 lg:items-center">
+      <div class="lg:col-span-5">
+        <p class="eyebrow eyebrow-light reveal">{loc.municipality}, {loc.department}</p>
+        <h2 id="tenjo-title" class="display-md reveal mt-3 text-blanco">{home.tenjo.title}</h2>
+        <p class="lead reveal mt-4 !text-salvia-200">{home.tenjo.text}</p>
+        <dl class="reveal mt-8 space-y-5">
+          <div class="flex gap-4"><dt><Icon name="pin" class="h-6 w-6 text-terracota-300" label="Ubicación" /></dt><dd>{loc.address || `${loc.municipality}, ${loc.department}. Te compartimos la ubicación exacta al confirmar tu visita.`}</dd></div>
+          <div class="flex gap-4"><dt><Icon name="clock" class="h-6 w-6 text-terracota-300" label="Horarios" /></dt><dd>{loc.hours || 'Horarios por confirmar. Escríbenos para coordinar tu visita.'}</dd></div>
+          {loc.directions && <div class="flex gap-4"><dt><Icon name="arrow" class="h-6 w-6 text-terracota-300" label="Cómo llegar" /></dt><dd>{loc.directions}</dd></div>}
+        </dl>
+        <div class="reveal mt-8 flex flex-wrap gap-3">
+          {loc.mapLink && <a href={loc.mapLink} target="_blank" rel="noopener" class="btn btn-light">Abrir en el mapa <Icon name="external" class="h-5 w-5" /></a>}
+          <a href="/contacto/" class="btn btn-ghost text-blanco">Agenda tu visita</a>
+        </div>
+      </div>
+      <div class="reveal lg:col-span-7">
+        <div class="blob-2 aspect-[4/3] overflow-hidden bg-bosque-800">
+          {loc.mapEmbedUrl ? (
+            <iframe src={loc.mapEmbedUrl} title={`Mapa de ubicación de Alma Canina en ${loc.municipality}`} class="h-full w-full border-0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+          ) : (
+            <Photo src={home.tenjo.image} alt={home.tenjo.imageAlt} hint="Foto o video del lugar · mapa configurable" scene="hills" tone="day" hintPos="blob" />
+          )}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {faqs.length > 0 && (
+    <section class="bg-blanco py-20 md:py-28" aria-labelledby="faq">
+      <div class="container-alma grid gap-10 lg:grid-cols-12">
+        <div class="lg:col-span-4"><SectionTitle eyebrow="Preguntas frecuentes" title="Lo que suelen preguntarnos" id="faq" /></div>
+        <div class="accordion space-y-3 lg:col-span-8">
+          {faqs.map((f) => (
+            <details class="reveal border border-salvia-200">
+              <summary>{f.data.question}<Icon name="plus" class="acc-icon h-6 w-6 text-terracota-700" /></summary>
+              <div class="acc-body"><p>{f.data.answer}</p></div>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</BaseLayout>

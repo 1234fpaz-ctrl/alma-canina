@@ -1,0 +1,81 @@
+{
+  "hero": {
+    "eyebrow": "Club canino · Tenjo, Cundinamarca",
+    "title": "Educamos con alma",
+    "subtitle": "Un espacio para aprender, conectar y disfrutar la vida junto a ellos.",
+    "text": "Educación, bienestar y experiencias para fortalecer el vínculo entre personas y perros en medio de la naturaleza de Tenjo.",
+    "primaryCta": "Conoce Alma Canina",
+    "secondaryCta": "Explora nuestras experiencias",
+    "image": "https://images.unsplash.com/photo-1668036097078-6560f2ce2216",
+    "imageAlt": "Perro de pie sobre una colina cubierta de pasto",
+    "video": ""
+  },
+  "pillars": [
+    {
+      "title": "Educamos",
+      "text": "Comprender también es cuidar."
+    },
+    {
+      "title": "Conectamos",
+      "text": "Creamos experiencias que fortalecen vínculos."
+    },
+    {
+      "title": "Transformamos",
+      "text": "Perros más felices. Humanos más conscientes."
+    }
+  ],
+  "story": {
+    "eyebrow": "Nuestra historia",
+    "chapters": [
+      {
+        "title": "Nace del amor por los animales",
+        "text": "Alma Canina nace del amor por los animales y de una idea sencilla: crear un espacio en el que las familias pudieran disfrutar tiempo de calidad con sus perros mientras aprenden a comprenderlos, educarlos y cuidarlos mejor.",
+        "image": "https://images.unsplash.com/photo-1677498106991-5c164ca515cd",
+        "imageAlt": "Perro negro sentado en un campo de flores amarillas"
+      },
+      {
+        "title": "En medio de la naturaleza de Tenjo",
+        "text": "En medio de la naturaleza de Tenjo, Cundinamarca, creamos un lugar pensado para fortalecer el vínculo entre humanos y animales a través de experiencias positivas, educación y bienestar.",
+        "image": "https://images.unsplash.com/photo-1610405317849-43e74311fcac",
+        "imageAlt": "Border collie sentado en un sendero rodeado de árboles"
+      },
+      {
+        "title": "Más que un lugar para perros",
+        "text": "Más que un lugar para perros, Alma Canina busca convertirse en un punto de encuentro para familias, tutores y profesionales del mundo animal. Un espacio donde se pueda aprender, jugar, entrenar, compartir y crear recuerdos juntos.",
+        "image": "https://images.unsplash.com/photo-1715152935950-c5dacf060ea7",
+        "imageAlt": "Perro corriendo por un campo de flores"
+      }
+    ]
+  },
+  "about": {
+    "eyebrow": "¿Quiénes somos?",
+    "title": "Un club de educación, bienestar y conexión familiar",
+    "text": "Alma Canina es un club canino de educación, bienestar y conexión familiar ubicado en Tenjo, Cundinamarca. Creamos experiencias para que las personas puedan compartir con sus perros en un entorno campestre, seguro y pensado para ellos, mientras adquieren herramientas que les permitan mejorar su convivencia, educación y cuidado.",
+    "highlight": "No buscamos simplemente cuidar perros. Queremos enseñar a las personas a cuidarlos, entenderlos y disfrutar la vida junto a ellos.",
+    "image": "https://images.unsplash.com/photo-1600352712371-15fd49ca42b5",
+    "imageAlt": "Perro de pelaje dorado sentado en un camino de tierra"
+  },
+  "experiencesIntro": {
+    "eyebrow": "Experiencias",
+    "title": "Todo lo que pueden vivir juntos",
+    "text": "Educación, juego, naturaleza y formación en un mismo lugar. Elige por dónde empezar."
+  },
+  "legislationTeaser": {
+    "eyebrow": "Centro de legislación y protección animal",
+    "title": "Conocer la ley también es una forma de cuidar",
+    "text": "Explicamos en lenguaje ciudadano las leyes que protegen a los animales en Colombia y hacemos seguimiento a los proyectos de ley que vienen en camino.",
+    "cta": "Explorar la legislación"
+  },
+  "tenjo": {
+    "title": "Un lugar para respirar, aprender y conectar",
+    "text": "En medio de la naturaleza de Tenjo, diseñamos experiencias para que humanos y perros salgan de la rutina y vuelvan a encontrarse.",
+    "image": "https://images.unsplash.com/photo-1761583780303-f4e89f7b2bd4",
+    "imageAlt": "Perro saltando en un prado rodeado de árboles",
+    "video": ""
+  },
+  "finalCta": {
+    "title": "Aquí no solo puedes traer a tu perro.",
+    "highlight": "Aquí aprenden a vivir mejor juntos.",
+    "cta": "Vive Alma Canina"
+  }
+}

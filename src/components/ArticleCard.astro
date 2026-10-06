@@ -1,0 +1,28 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Photo from './Photo.astro';
+import Icon from './Icon.astro';
+import { ARTICLE_CATEGORIES, formatDate } from '../lib/site';
+interface Props { article: CollectionEntry<'articles'>; index?: number; large?: boolean }
+const { article, index = 0, large = false } = Astro.props;
+const d = article.data;
+const scenes = ['meadow', 'family', 'forest', 'hills'] as const;
+const tones = ['sage', 'dawn', 'day', 'dusk'] as const;
+const search = [d.title, d.description, ARTICLE_CATEGORIES[d.category], ...d.tags].join(' ').toLowerCase();
+---
+<article class:list={['card card-lift card-zoom filterable group flex flex-col', large && 'md:flex-row']} data-cat={d.category} data-search={search}>
+  <div class:list={['relative overflow-hidden', large ? 'aspect-[16/10] md:aspect-auto md:w-1/2' : 'aspect-[16/10]']}>
+    <Photo src={d.image} alt={d.imageAlt} scene={scenes[index % 4]} tone={tones[index % 4]} sizes="(min-width: 1024px) 40vw, 100vw" />
+  </div>
+  <div class:list={['flex flex-1 flex-col p-6 md:p-7', large && 'md:justify-center md:p-10']}>
+    <p class="flex flex-wrap items-center gap-2 text-sm">
+      <span class="chip bg-salvia-100 font-semibold text-bosque-900">{ARTICLE_CATEGORIES[d.category]}</span>
+      <time datetime={d.date.toISOString()} class="text-tinta-suave">{formatDate(d.date)}</time>
+    </p>
+    <h3 class:list={['mt-3 text-bosque-900', large ? 'text-3xl md:text-4xl' : 'text-2xl']}>
+      <a href={`/aprende/${article.id}/`} class="no-underline after:absolute after:inset-0 after:content-['']">{d.title}</a>
+    </h3>
+    <p class="mt-3 text-tinta-suave">{d.description}</p>
+    <span class="mt-auto inline-flex items-center gap-2 pt-5 font-semibold text-bosque-800">Leer <Icon name="arrow" class="h-5 w-5 transition-transform group-hover:translate-x-1" /></span>
+  </div>
+</article>

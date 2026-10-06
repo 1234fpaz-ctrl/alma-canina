@@ -1,0 +1,38 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Photo from './Photo.astro';
+import Icon from './Icon.astro';
+import DogFace from './DogFace.astro';
+import { EXPERIENCE_CATEGORIES } from '../lib/site';
+interface Props { exp: CollectionEntry<'experiences'>; index?: number; peek?: boolean }
+const { exp, index = 0, peek = false } = Astro.props;
+const d = exp.data;
+const cat = EXPERIENCE_CATEGORIES[d.category];
+const scenes = ['family', 'meadow', 'workshop', 'spa', 'vet', 'event'] as const;
+const tones = ['day', 'dawn', 'sage', 'dawn', 'day', 'dusk'] as const;
+---
+<div class="peek-host reveal h-full" style={`--d:${(index % 3) * 90}ms`}>
+  {peek && <DogFace class="peek-dog" />}
+  <article class="card card-lift card-zoom group flex h-full flex-col">
+    <div class="relative aspect-[4/3] overflow-hidden">
+      <Photo src={d.image} alt={d.imageAlt} hint={d.photoHint} scene={scenes[index % 6]} tone={tones[index % 6]} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" />
+      <span class:list={['chip absolute left-4 top-4 z-10', cat.color]}><Icon name={cat.icon} class="h-4 w-4" />{cat.label}</span>
+    </div>
+    <div class="flex flex-1 flex-col p-6 md:p-7">
+      <p class="text-sm font-semibold text-terracota-700">{d.tagline}</p>
+      <h3 class="mt-1.5 text-[1.6rem] text-bosque-900">
+        <a href={`/experiencias/${exp.id}/`} class="no-underline after:absolute after:inset-0 after:z-[2] after:content-['']">{d.title}</a>
+      </h3>
+      <p class="mt-3 text-tinta-suave">{d.summary}</p>
+      {d.items.length > 0 && (
+        <ul class="mt-4 flex flex-wrap gap-1.5">
+          {d.items.slice(0, 4).map((it) => <li class="chip bg-salvia-50 text-[0.82rem] text-bosque-800">{it}</li>)}
+          {d.items.length > 4 && <li class="chip bg-salvia-50 text-[0.82rem] text-bosque-800">+{d.items.length - 4}</li>}
+        </ul>
+      )}
+      <span class="mt-auto inline-flex items-center gap-2 pt-6 font-semibold text-bosque-800">
+        Conocer más <Icon name="arrow" class="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+      </span>
+    </div>
+  </article>
+</div>

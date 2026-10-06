@@ -1,0 +1,101 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Photo from '../../components/Photo.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import LawCard from '../../components/LawCard.astro';
+import Icon from '../../components/Icon.astro';
+import { render, getEntry } from 'astro:content';
+import { ARTICLE_CATEGORIES, formatDate } from '../../lib/site';
+import { getArticles } from '../../lib/content';
+import { breadcrumbSchema } from '../../lib/schema';
+
+export async function getStaticPaths() {
+  const all = await getArticles();
+  return all.map((article) => ({ params: { slug: article.id }, props: { article } }));
+}
+const { article } = Astro.props;
+const d = article.data;
+const { Content } = await render(article);
+const all = await getArticles();
+const related = all
+  .filter((a) => a.id !== article.id)
+  .map((a) => ({ a, score: (a.data.category === d.category ? 2 : 0) + a.data.tags.filter((t) => d.tags.includes(t)).length }))
+  .sort((x, y) => y.score - x.score)
+  .slice(0, 3)
+  .map((x) => x.a);
+const laws = (await Promise.all(d.relatedLaws.map((s) => getEntry('laws', s)))).filter(Boolean);
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Aprende', path: '/aprende/' },
+  { name: d.title, path: `/aprende/${article.id}/` },
+];
+---
+<BaseLayout
+  title={d.title}
+  description={d.description}
+  type="article"
+  image={d.image || undefined}
+  schema={[
+    breadcrumbSchema(Astro.site!, crumbs),
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: d.title,
+      description: d.description,
+      datePublished: d.date.toISOString(),
+      dateModified: (d.updated ?? d.date).toISOString(),
+      author: { '@type': 'Organization', name: d.author },
+      publisher: { '@id': new URL('/#organizacion', Astro.site).href },
+      inLanguage: 'es-CO',
+      mainEntityOfPage: new URL(`/aprende/${article.id}/`, Astro.site).href,
+    },
+  ]}
+>
+  <article>
+    <header class="bg-crema pb-12 pt-32 md:pt-40">
+      <div class="container-alma max-w-4xl">
+        <Breadcrumbs items={crumbs} />
+        <p class="mt-8 flex flex-wrap items-center gap-3 text-sm">
+          <a href={`/aprende/?categoria=${d.category}`} class="chip bg-salvia-200 font-semibold text-bosque-900 no-underline">{ARTICLE_CATEGORIES[d.category]}</a>
+          <time datetime={d.date.toISOString()} class="text-tinta-suave">{formatDate(d.date)}</time>
+          <span class="text-tinta-suave">· {d.author}</span>
+        </p>
+        <h1 class="display-lg mt-4 text-bosque-900">{d.title}</h1>
+        <p class="lead mt-5">{d.description}</p>
+      </div>
+    </header>
+    <div class="container-alma -mt-2 max-w-5xl">
+      <div class="aspect-[16/8] overflow-hidden rounded-[2rem] shadow-lg"><Photo src={d.image} alt={d.imageAlt} scene="meadow" tone="sage" eager /></div>
+    </div>
+    <div class="container-alma max-w-4xl py-14">
+      <div class="prose-alma text-lg"><Content /></div>
+      {d.sources.length > 0 && (
+        <aside class="mt-14 rounded-[2rem] bg-salvia-50 p-6 md:p-8" aria-labelledby="fuentes">
+          <h2 id="fuentes" class="text-2xl text-bosque-900">Fuentes</h2>
+          <ul class="mt-4 space-y-2">
+            {d.sources.map((s) => <li><a href={s.url} target="_blank" rel="noopener" class="inline-flex items-center gap-2 font-medium text-bosque-700 underline decoration-salvia-400 decoration-2 underline-offset-4">{s.label}<Icon name="external" class="h-4 w-4" /></a></li>)}
+          </ul>
+        </aside>
+      )}
+    </div>
+  </article>
+
+  {laws.length > 0 && (
+    <section class="bg-bosque-900 py-16" aria-labelledby="leyes-rel">
+      <div class="container-alma">
+        <h2 id="leyes-rel" class="display-md text-blanco">Normas relacionadas</h2>
+        <div class="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">{laws.map((l, i) => <LawCard item={l!} index={i} />)}</div>
+      </div>
+    </section>
+  )}
+
+  {related.length > 0 && (
+    <section class="bg-blanco py-16" aria-labelledby="rel">
+      <div class="container-alma">
+        <h2 id="rel" class="display-md text-bosque-900">Sigue aprendiendo</h2>
+        <div class="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">{related.map((a, i) => <ArticleCard article={a} index={i} />)}</div>
+      </div>
+    </section>
+  )}
+</BaseLayout>

@@ -1,0 +1,130 @@
+---
+/**
+ * Foto o ilustración de reemplazo.
+ * - Si `src` tiene valor (subido desde /admin), muestra la fotografía optimizada.
+ * - Si está vacío, muestra una ilustración original de Alma Canina y, si está activado en
+ *   Configuración → "Mostrar indicaciones de fotos", una etiqueta que indica qué foto subir.
+ */
+import settings from '../data/settings.json';
+import { imgSrc, imgSrcSet } from '../lib/site';
+
+type Scene = 'hills' | 'family' | 'forest' | 'workshop' | 'spa' | 'meadow' | 'vet' | 'event';
+type Tone = 'day' | 'dawn' | 'dusk' | 'sage';
+interface Props {
+  src?: string;
+  alt?: string;
+  hint?: string;
+  scene?: Scene;
+  tone?: Tone;
+  class?: string;
+  imgClass?: string;
+  eager?: boolean;
+  sizes?: string;
+  width?: number;
+  height?: number;
+  shift?: number;
+  hintPos?: 'bottom-left' | 'blob';
+}
+const {
+  src = '',
+  alt = '',
+  hint = '',
+  scene = 'hills',
+  tone = 'day',
+  class: cls = '',
+  imgClass = '',
+  eager = false,
+  sizes = '(min-width: 1024px) 50vw, 100vw',
+  width = 1600,
+  height = 1100,
+  shift = 0,
+  hintPos = 'bottom-left',
+} = Astro.props;
+
+const tones: Record<Tone, { sky1: string; sky2: string; sun: string; h1: string; h2: string; h3: string; h4: string }> = {
+  day: { sky1: '#cfe2ee', sky2: '#f6efe2', sun: '#f3d9a4', h1: '#b4c8a6', h2: '#9ab28b', h3: '#3d6a52', h4: '#234030' },
+  dawn: { sky1: '#f6efe2', sky2: '#efd2bd', sun: '#e2a183', h1: '#d0dcc6', h2: '#b4c8a6', h3: '#677f59', h4: '#2e5440' },
+  dusk: { sky1: '#e6d6ba', sky2: '#e2a183', sun: '#f6efe2', h1: '#9ab28b', h2: '#677f59', h3: '#2e5440', h4: '#1a3124' },
+  sage: { sky1: '#e5ecdf', sky2: '#f1f5ee', sun: '#f6efe2', h1: '#d0dcc6', h2: '#b4c8a6', h3: '#9ab28b', h4: '#3d6a52' },
+};
+const t = tones[tone];
+const showHint = settings.showPhotoHints && hint;
+const id = `ph${Math.random().toString(36).slice(2, 8)}`;
+---
+{src ? (
+  <img
+    src={imgSrc(src, 1600)}
+    srcset={imgSrcSet(src)}
+    sizes={sizes}
+    alt={alt}
+    width={width}
+    height={height}
+    loading={eager ? 'eager' : 'lazy'}
+    fetchpriority={eager ? 'high' : undefined}
+    decoding="async"
+    onerror="this.onerror=null;this.removeAttribute('srcset');this.src='/images/foto-alma.svg'"
+    class:list={['h-full w-full bg-salvia-100 object-cover', imgClass, cls]}
+  />
+) : (
+  <div class:list={['relative h-full w-full overflow-hidden', cls]} role={alt ? 'img' : undefined} aria-label={alt || undefined}>
+    <svg class="ph-art absolute inset-0 h-full w-full" viewBox="0 0 800 560" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs>
+        <linearGradient id={`${id}s`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color={t.sky1} />
+          <stop offset="1" stop-color={t.sky2} />
+        </linearGradient>
+      </defs>
+      <rect width="800" height="560" fill={`url(#${id}s)`} />
+      <circle cx="590" cy="170" r="78" fill={t.sun} opacity=".9" />
+      <path d="M0 330 C 120 250, 260 250, 380 300 C 500 350, 620 250, 800 270 L800 560 L0 560Z" fill={t.h1} />
+      <path d="M0 380 C 160 320, 300 350, 430 370 C 560 390, 680 320, 800 340 L800 560 L0 560Z" fill={t.h2} />
+      {(scene === 'hills' || scene === 'forest' || scene === 'meadow' || scene === 'event') && (
+        <g fill={t.h3}>
+          <path d="M120 360 l18 -80 l18 80z" /><path d="M150 366 l14 -60 l14 60z" />
+          <path d="M640 350 l20 -96 l20 96z" /><path d="M676 356 l15 -66 l15 66z" />
+          {scene === 'forest' && (<g><path d="M40 420 l30 -170 l30 170z" /><path d="M700 430 l34 -190 l34 190z" /><path d="M560 420 l24 -130 l24 130z" /><path d="M250 420 l22 -120 l22 120z" /></g>)}
+        </g>
+      )}
+      <path d="M0 440 C 180 400, 340 430, 470 450 C 600 470, 700 420, 800 430 L800 560 L0 560Z" fill={t.h3} />
+      <path d="M0 500 C 200 470, 380 500, 520 510 C 650 520, 720 490, 800 500 L800 560 L0 560Z" fill={t.h4} />
+      <path d="M330 560 C 360 520, 420 480, 470 452" stroke={t.sky2} stroke-width="10" fill="none" opacity=".45" stroke-linecap="round" stroke-dasharray="2 16" />
+
+      <g transform={`translate(${shift} 0)`}>
+      {(scene === 'family' || scene === 'workshop' || scene === 'vet' || scene === 'event') && (
+        <g fill={t.h4}>
+          <circle cx="300" cy="352" r="16" /><rect x="282" y="372" width="36" height="84" rx="16" />
+          <rect x="286" y="440" width="12" height="40" rx="6" /><rect x="302" y="440" width="12" height="40" rx="6" />
+          {(scene === 'workshop' || scene === 'event') && (
+            <g><circle cx="230" cy="366" r="14" /><rect x="214" y="384" width="32" height="76" rx="14" /><circle cx="520" cy="360" r="15" /><rect x="503" y="379" width="34" height="80" rx="15" /></g>
+          )}
+          {scene === 'family' && (<g><circle cx="248" cy="392" r="11" /><rect x="236" y="406" width="24" height="54" rx="11" /></g>)}
+          {scene === 'family' && <path d="M318 400 C 350 420, 370 430, 392 438" stroke={t.h4} stroke-width="3" fill="none" />}
+        </g>
+      )}
+
+      {scene !== 'hills' && scene !== 'forest' && (
+        <g transform={scene === 'family' ? 'translate(380 418) scale(.62)' : 'translate(360 404) scale(.78)'} fill={t.h4}>
+          <path d="M27 40 C 17 34, 12 26, 11 15" fill="none" stroke={t.h4} stroke-width="6.5" stroke-linecap="round" />
+          <rect x="29" y="46" width="8.5" height="30" rx="4.25" /><rect x="41" y="47" width="8.5" height="29" rx="4.25" />
+          <rect x="70" y="47" width="8.5" height="29" rx="4.25" /><rect x="81" y="46" width="8.5" height="30" rx="4.25" />
+          <rect x="23" y="29" width="70" height="27" rx="13.5" />
+          <rect x="76" y="16" width="17" height="30" rx="8.5" transform="rotate(24 84 31)" />
+          <circle cx="96" cy="20" r="13.5" /><ellipse cx="109" cy="24.5" rx="10" ry="7.5" />
+          <path d="M90 9 C 83 11, 81 24, 85 32 C 90 28, 94 18, 90 9 Z" />
+        </g>
+      )}
+      </g>
+      {scene === 'meadow' && <circle cx="520" cy="476" r="13" fill="#c9714f" />}
+      {scene === 'spa' && (
+        <g fill="#fcfaf5" opacity=".75"><circle cx="330" cy="330" r="22" /><circle cx="380" cy="290" r="14" /><circle cx="440" cy="320" r="18" /><circle cx="490" cy="270" r="10" /><circle cx="300" cy="270" r="9" /></g>
+      )}
+      {scene === 'vet' && <g fill="#fcfaf5" opacity=".85"><rect x="560" y="300" width="60" height="18" rx="6" /><rect x="581" y="279" width="18" height="60" rx="6" /></g>}
+    </svg>
+    {showHint && (
+      <span class:list={["absolute z-10 inline-flex items-center gap-1.5 rounded-full bg-blanco/90 px-3 py-1.5 text-xs font-semibold text-bosque-900 shadow-sm backdrop-blur", hintPos === "blob" ? "left-1/2 top-[20%] max-w-[70%] -translate-x-1/2" : "bottom-3 left-3 max-w-[85%]"]}>
+        <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h3l2-3h6l2 3h3v12H4z" /><circle cx="12" cy="13" r="3.5" /></svg>
+        <span class="truncate">Foto pendiente: {hint}</span>
+      </span>
+    )}
+  </div>
+)}
