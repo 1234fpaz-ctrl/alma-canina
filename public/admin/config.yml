@@ -10,7 +10,7 @@
 
 backend:
   name: github
-  repo: USUARIO-GITHUB/alma-canina
+  repo: 1234fpaz-ctrl/alma-canina
   branch: main
   commit_messages:
     create: "Crear {{collection}} «{{slug}}»"
